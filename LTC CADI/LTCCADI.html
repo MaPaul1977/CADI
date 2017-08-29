@@ -1,0 +1,526 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="x-ua-compatible" content="IE=Edge" charset="utf-8"/>
+    <title>LTC CADI</title>
+
+    <link rel="stylesheet" href="LTCCADI.css">
+
+    <script language="JavaScript" type="text/javascript" src="LTCCADI.js"></script>
+    
+</head>
+
+<body onclick="changeTabs()" onload="init()">
+    <form id="validate" name="validate">
+        <div id="cadiAuth">
+            <div id="divLeft">
+                <div id="verification">
+                        <!-- This is the first form on the page, which is explicitly for getting some general information about the caller through Textbox and Listbox controls. -->
+                        <strong> Caller's Information: </strong>
+                        <br>
+                        <!-- Textboxes to get some info on the caller -->
+                        Policy Number: <input type="text" id="PolicyNumberText" name="PolicyNumberText" onchange="VerifyAllInfo()"><br>
+                        Caller's Name: <input type="text" id="CallersNameText" name="CallersNameText" onchange="VerifyAllInfo()"><br>
+                        <br>
+                        <strong> Relationship: </strong>
+                        <br>
+                        <!-- A listbox to indicate the relationship between the caller and the insured -->
+                        <select name="RelationshipListbox" id="RelationshipListbox" size="1" onclick="validateOther(); VerifyAllInfo();">
+                            <option value="" disabled="disabled" selected="selected">Relationship</option>
+                            <option value="Insured">Insured</option>
+                            <option value="POA of Insured">POA of Insured</option>
+                            <option value="Covered Dependent">Covered Dependent</option>
+                            <option value="Policy Owner">Policy Owner</option>
+                            <option value="Spouse/Family">Spouse/Family</option>
+                            <option value="Third Party/Other">Third Party/Other</option>
+                        </select>
+                        <br>
+                        <br>
+                        <strong> Verify:</strong>
+                        <br>
+                        <!-- Were they qualified before they got to the rep? -->
+                        <input type="checkbox" name="CTIQualified" id="check" value="Received a call which was CTI pop verified. // " onclick="VerifyAllInfo()">CTI Qualified<br>
+                        <input type="checkbox" name="Transferred" id="check" value="Received a transferred call that was qualified by the off-shore representative. // " onclick="VerifyAllInfo()">Transferred and Qualified<br>
+
+                        <!-- These are radio buttons to indicate whether the caller provided the policy number or the Insured's Social Security Number. -->
+                        <input type="radio" name="VerifyRadio" id="VR1" value="1" onclick="document.getElementById(&#39;RadioButton&#39;).innerHTML = 1;VerifyAllInfo();"> Policy Number <br>
+                        <!-- These are radio buttons to indicate whether the caller provided the policy number or the Insured's Social Security Number. -->
+                        <input type="radio" name="VerifyRadio" id="VR2" value="2" onclick="document.getElementById(&#39;RadioButton&#39;).innerHTML = 2;VerifyAllInfo();"> Last 4 digits of the Insured's SSN
+
+                        <!-- Textbox to get the SSN. -->
+                        <input type="text" name="SSNText" onkeyup="VerifyAllInfo()"><br>
+                        <input type="checkbox" name="InsuredNameText" id="check" value="" onclick="VerifyAllInfo()">Insured's Name<br>
+                        <input type="checkbox" name="InsuredDOBText" id="check" value="" onclick="VerifyAllInfo()">Insured's DOB<br><br>
+
+                        <!-- This is the textarea in which we can hold information about which radio button is checked -->
+<textarea id="RadioButton" name="RadioButton" style="display:none;"></textarea>
+                        <strong>Secondary Authorization:</strong>
+                        <br>
+                        <!-- A listbox to indicate the secondary form of authorization which might be used. -->
+                        <select name="SecondaryAuthListbox" size="2" onchange="VerifyAllInfo()">
+                            <option>Verbal Auth from Insured</option>
+                            <option>Valid CIR on file for caller*</option>
+                            <option></option>
+                        </select>
+                        <br>
+                        <br>
+                        <strong>Filenet ImageID:</strong>
+                        <br>
+                        <!-- Textbox to get the ISRA DocID of the secondary authorization on file. -->
+                        <input type="text" name="SecondaryAuthText" onkeyup="VerifyAllInfo()" value=""><br>
+                  
+                </div>
+
+
+                <div id="divcadiText">
+                    <table>
+                        <tr>
+
+                            <td id="Docs" colspan=2>
+                                <strong>Documentation:</strong><br>
+                                <!-- This is a the area where the user will type out their Wrap Up. -->
+<textarea name="CADIText" id=CADIText></textarea>
+                                <!-- This button triggers my AddToCADI function to display the status of the CADI variable. -->
+                                <input type="button" onclick="AddToCADI()" id="button" value="Copy" style="float:center;">
+                                <!-- This button resets the AuthorizedInfo form -->
+                                <input type="button" Value="Reset" onclick="clearForm()" style="float:center;">
+                            </td>
+
+                        </tr>
+
+
+                    </table>
+                </div>
+            </div>
+            <div id="divCenter">
+                <div id="infoRelease">
+                    <form name="AuthorizedInfo" action="http://cnonet.conseco.ad/CIGWashington/cig_phs/Customer%20Service%20System%20Documents/CADI-Health.html">
+                        <!-- Now, let's list out what exactly we are allowed to say. -->
+                        <strong> Info We Can Provide </strong>
+                        <br>
+<textarea id="InfoYes" readonly="" style="height:220px;width:200px;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">• What is needed to file a claim &#013; • What the generic policy covers (nursing home, HHC, etc.) &#013; • Elimination period</textarea>
+                        <br>
+                        <strong> Info We Can't Provide </strong>
+                        <br>
+<textarea id="InfoNo" readonly="" style="height:270px;width:200px;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">• Policy Maximum &#013; • Maximum benefit for any one period of expense &#013; • Policy balance &#013; • Health Status/Condition   &#013; • Diagnosis   &#013; • Assessment Scores   &#013; • Medical Records &#013; • Policy Information:   &#013; • Policy Coverage   &#013; • Premium Amounts   &#013; • Premium Due Dates   &#013; • Policy Status &#013; • Claims Received Dates &#013; • Claims Paid Dates</textarea>
+                        <br>
+                        <!-- This is the textarea in which we can pass variables between functions -->
+<textarea id="Variable" style="display:none;">Not Verified</textarea>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div id="divRight">
+            <DIV STYLE="border:none thin gray">
+
+                <TABLE STYLE="width:100%; height:300" CELLPADDING=0 CELLSPACING=0>
+                    <TR>
+                        <TD ID=t1 CLASS=selTab HEIGHT=25>CLAIMS</TD>
+                        <TD ID=t2 CLASS=tab>CLAIM REQ</TD>
+                        <TD ID=t3 CLASS=tab>PHS</TD>
+                        <TD ID=t4 CLASS=tab>PREMIUM</TD>
+                        <TD ID=t5 CLASS=tab>BENEFITS</TD>
+                    </TR>
+                    <TR>
+                        <TD ID=t1base STYLE="height:2; border-left:solid thin white"></TD>
+                        <TD ID=t2base STYLE="height:2; background-color:white;"></TD>
+                        <TD ID=t3base STYLE="height:2; background-color:white"></TD>
+                        <TD ID=t4base STYLE="height:2; background-color:white"></TD>
+                        <TD ID=t5base STYLE="height:2; background-color:white; border-right:solid thin white"></TD>
+                    </TR>
+
+                    <TR>
+                        <TD HEIGHT="*" COLSPAN=5 ID=tabContents
+                            STYLE="	border-left:solid thin white;
+											border-bottom:solid thin white;
+											border-right:solid thin white">
+                            sample contents
+                        </TD>
+                    </TR>
+                </TABLE>
+            </DIV>
+        </div>
+
+        <div id="tabs">
+            <!-- This is the content of the T1 DIV item. -->
+            <DIV CLASS=conts ID=t1Contents>
+                <DIV class="infoCheckBox" id="divClaims">
+                    <!-- CLAIMS  -->
+                    <!-- CLAIMS  -->
+                    <!-- CLAIMS  -->
+                    <!-- CLAIMS  -->
+                    <!-- First Claim item -->
+                    <input type="checkbox" onclick="Addtext('C1_1', 'C1_2', 'C1_3', 'C1_4', 'C1_5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the claim was processed on ' + VariableArray.one + ' and paid to ' + VariableArray.two + ' in the amount of ' + VariableArray.three + '. The check was mailed on ' + VariableArray.four + ' and the claim # is ' + VariableArray.five + '.');"
+                           id="check" value="">Claim Paid<br>
+                    <span title="Claim Processed Date">
+                        Processed Date: <input type="text" id="C1_1" name="C1_1" onchange="" value=""><br>
+                    </span>
+                    <span title="Paid to Date">
+                        Paid to: <input type="text" id="C1_2" name="C1_2" onchange="" value=""><br>
+                    </span>
+                    <span title="Amount Paid">
+                        Amount Paid: <input type="text" id="C1_3" name="C1_3" onchange="" value=""><br>
+                    </span>
+                    <span title="Mailed Date">
+                        Mailed Date: <input type="text" id="C1_4" name="C1_4" onchange="" value=""><br>
+                    </span>
+                    <span title="Claim Number">
+                        Claim Number: <input type="text" id="C1_5" name="C1_5" onchange="" value=""><br>
+                    </span>
+                    <br/>
+
+                    <!-- Second Claim item-->
+                    <input type="checkbox" onclick="Addtext('C2_1', 'C2_2', 'C2_3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the claim was rejected due to the EP needing to be met prior to benefits being paid. '
+        + VariableArray.one + 'days of ' + VariableArray.two + 'met for the EP per claim number'
+            + VariableArray.three + '.');" id="check" value="">Applied to EP<br>
+                    <span title="Days Met">
+                        Days Met: <input type="text" id="C2_1" name="C2_1" onchange="" value=""><br>
+                    </span>
+                    <span title="EP">
+                        EP: <input type="text" id="C2_2" name="C2_2" onchange="" value=""><br>
+                    </span>
+                    <span title="Claim Number">
+                        Claim Number: <input type="text" id="C2_3" name="C2_3" onchange="" value=""><br>
+                    </span><br />
+
+                    <!-- Third Claim item-->
+                    <input type="checkbox" onclick="Addtext('C3_1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the claim was rejected due to the weekly benefits reaching their maxed per claim number ' + VariableArray.one + '.');" id="check" value="">Weekly Max <br>
+                    <span title="Claim Number">
+                        Claim Number: <input type="text" id="C3_1" name="C3_1" onchange="" value=""><br>
+                    </span><br />
+
+                    <!-- Fourth Claim item-->
+                    <input type="checkbox" onclick="Addtext('C4_1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the claim was rejected due to the benefits reaching their maxed per claim number ' + VariableArray.one + '.');" id="check" value="">Monthly Max <br>
+                    <span title="Claim Number">
+                        Claim Number: <input type="text" id="C4_1" name="C4_1" onchange="" value=""><br>
+                    </span><br />
+
+                    <!-- Fifth Claim item-->
+                    <input type="checkbox" onclick="Addtext('C#_1', 'C#_2', 'C5_3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the claim was rejected due to duplicate bill. Benefits already paid on '
+        + VariableArray.one + ' to ' + VariableArray.two + ' per claim number ' + VariableArray.three + '.');" id="check" value="">Duplicate bill <br>
+                    <span title="Date Paid">
+                        Date Paid: <input type="text" id="C5_1" name="C5_1" onchange="" value=""><br>
+                    </span>
+                    <span title="Paid To">
+                        Paid To: <input type="text" id="C5_2" name="C5_2" onchange="" value=""><br>
+                    </span>
+                    <span title="Claim Number">
+                        Claim Number: <input type="text" id="C5_3" name="C5_3" onchange="" value=""><br>
+                    </span><br />
+
+                    <!-- Sixth Claim item-->
+                    <input type="checkbox" onclick="Addtext('C6_1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the claim was rejected due to the PH not being functionally incapacitated or cognitively impaired per claim number ' + VariableArray.one + '.');" id="check" value="">Not Funct incap/Cog impaired<br>
+                    <span title="Claim Number">
+                        Claim Number: <input type="text" id="C6_1" name="C6_1" onchange="" value=""><br>
+                    </span><br />
+
+                    <!-- Seventh Claim item-->
+                    <input type="checkbox" onclick="Addtext('C7_1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the claim was rejected because the PH does not meet the benefit triggers per claim number ' + VariableArray.one + '.');"
+                           id="check" value="">Benefit Triggers<br>
+                    <span title="Claim Number">
+                        Claim Number: <input type="text" id="C7_1" name="C7_1" onchange="" value=""><br>
+                    </span><br />
+
+                    <!-- Eighth Claim item-->
+                    <input type="checkbox" onclick="Addtext('C8_1', 'C8_2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the claim was rejected because of the exclusion clause number ' + VariableArray.one +
+        '. As per claim number ' + VariableArray.two + '.');" id="check" value="">Exclusion Clause<br>
+                    <span title="Exclusion number">
+                        Exclusion number: <input type="text" id="C8_1" name="C8_1" onchange="" value=""><br>
+                    </span>
+                    <span title="Claim number">
+                        Claim number: <input type="text" id="C8_2" name="C8_2" onchange="" value=""><br>
+                    </span><br />
+
+                    <!-- Ninth Claim item-->
+                    <input type="checkbox" onclick="Addtext('C9_1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the claim was rejected because the treatment is not included in the approved POC per claim number ' + VariableArray.one + '.');" id="check" value="">Not Covered Exp<br>
+                    <span title="Claim Number">
+                        Claim Number: <input type="text" id="C9_1" name="C9_1" onchange="" value=""><br>
+                    </span><br />
+
+                    <!-- Tenth Claim item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the expense not covered by the policy.');" id="check" value="">Not Covered Exp<br>
+
+                    <!-- Eleventh Claim item-->
+                    <input type="checkbox" onclick="Addtext('C11_1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Please submit a letter/Form of appeal with supporting documentation as to why our decision should be overturned. TAT ' + VariableArray.one + ' calendar days.');" id="check" value="">Appeal<br>
+                    <span title="TAT">
+                        TAT: <input type="text" id="C11_1" name="C11_1" onchange="" value=""><br>
+                    </span><br />
+
+                </DIV>
+            </DIV>
+            <!-- This is the content of the T2 DIV item. -->
+            <DIV CLASS=conts ID=t2Contents>
+                <DIV class="infoCheckBox">
+                    <!-- CLAIM REQUIREMENTS -->
+                    <!-- CLAIM REQUIREMENTS -->
+                    <!-- CLAIM REQUIREMENTS -->
+                    <!-- CLAIM REQUIREMENTS -->
+
+                    <!-- First Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('CQ1_1', 'CQ1_2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the claim is pending for ' + VariableArray.one + ' per ' + VariableArray.two + '.');" id="check" value="">Pending<br>
+                    <span title="Pending For">
+                        Pending For: <input type="text" id="CQ1_1" name="CQ1_1" onchange="" value=""><br>
+                    </span>
+                    <span title="Claim number or Tagline">
+                        Claim number or Tagline: <input type="text" id="CQ1_2" name="CQ1_2" onchange="" value=""><br>
+                    </span><br />
+
+                    <!-- Second Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Gave HHC proof of loss: Tat up to 6 weeks.');" id="check" value="">HHC CLAIM<br>
+                    <br />
+
+                    <!-- Third Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Gave NH proof of loss: Tat up to 6 weeks.');" id="check" value="">NH CLAIM<br><br />
+
+                    <!-- Fourth Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Gave ALF proof of loss: Tat up to 6 weeks.');" id="check" value="">ALF CLAIM<br><br />
+
+                    <!-- Fifth Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Gave ADC proof of loss: Tat up to 6 weeks.');" id="check" value="">ADC CLAIM<br><br />
+
+                    <!-- Sixth Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that ICG claim packet should be returned with caregivers license or certificate, itemized/billing statement & proof of payment. Advised that if the caregiver is paid by check we will need a copy of the front & back of the cancelled check. TAT up to 6 weeks.');" id="check" value="">ICG CLAIM<br>
+                    <br />
+
+                    <!-- Seventh Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised of the claims address.');" id="check" value="">Claim Address<br>
+                    <br />
+
+                    <!-- Eighth Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised of the claims fax number.');" id="check" value="">Claim Fax<br>
+                    <br />
+
+                    <!-- Ninth Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the benefit triggers are: Med nec, cog impairment or asst with additionals. Additionals are: B, D, E, C, T & TR.');" id="check" value="">Benefit Triggers<br>
+                    <br />
+
+                    <!-- Tenth Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the benefit triggers are: Cog impairment or asst with 2 or more additionals expected to last at least 90 days. Additionals are: B, D, E, C, T & TR.');" id="check" value="">Chronically ill<br>
+                    <br />
+
+                    <!-- Eleventh Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised to send a monthly bill and Proof of Residency form after the end of the billing period.  Advised that we can’t accept bills for future charges.');" id="check" value="">Proof of Residency<br>
+                    <br />
+
+                    <!-- Twelfth Claim Requirements item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Provided the recertification telephone number 1-888-898-3602 option 2. The TAT 6 is weeks.');" id="check" value="">Recertification Number<br><br />
+
+
+                </DIV>
+            </DIV>
+            <!-- This is the content of the T3 DIV item. -->
+            <DIV CLASS=conts ID=t3Contents>
+                <DIV class="infoCheckBox">
+                    <!-- PHS -->
+                    <!-- PHS -->
+                    <!-- PHS -->
+                    <!-- PHS -->
+
+
+                    <!-- First PHS item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that to cancel the policy, the caller needs to send a written request, the letter must be signed by PH or POA  and must include the policy number. The TAT is 3 weeks.');" id="check" value="">Cancellation<br>
+                    <br />
+
+                    <!-- Second PHS item-->
+                    <input type="checkbox" onclick="Addtext('PH2_1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised to send a copy of death certificate so we can cancel the policy & refund excess premiums. The caller must include the policy number. The TAT is 4 weeks. Date of Death is ' + VariableArray.one);" id="check" value="">Death Cancel<br>
+                    <span title="MM/DD/YYYY">
+                        Date of Death: <input type="text" id="PH2_1" name="PH2_1" onchange="" value=""><br>
+                    </span>
+                    <br />
+
+                    <!-- Third PHS item-->
+                    <input type="checkbox" onclick="Addtext('PH3_1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised to send a copy of the death certificate so that we can remove the deceased and refund excess premiums. The request must include the policy number.  New premium will be on the removal notification. The TAT is 3 weeks. Cancelling member name is ' + VariableArray.one);" id="check" value="">Member Cancel<br>
+                    <span title="Member Name">
+                        Member Name: <input type="text" id="PH3_1" name="PH3_1" onchange="" value=""><br>
+                    </span>
+                    <br />
+
+                    <!-- Fourth PHS item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised of the PHS address. ');" id="check" value="">PHS Address<br>
+                    <br />
+
+                </DIV>
+            </DIV>
+            <!-- This is the content of the T4 DIV item. -->
+            <DIV CLASS=conts ID=t4Contents>
+                <DIV class="infoCheckBox">
+
+                    <!-- PREMIUM ITEMS -->
+                    <!-- PREMIUM ITEMS -->
+                    <!-- PREMIUM ITEMS -->
+                    <!-- PREMIUM ITEMS -->
+
+                    <!-- First Premium item-->
+                    <input type="checkbox" onclick="Addtext('PR1_1', 'PR1_2', 'PR1_3', 'PR1_4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the policy is on PPSP. PTD is ' + VariableArray.one + '. Monthly premium amount is ' + VariableArray.two + '. Draft date is ' + VariableArray.three + '. Last draft date was ' + VariableArray.four + '.');" id="check" value="">Billing (PPSP)<br>
+                    <span title="Paid to Date">
+                        Paid to Date: <input type="text" id="PR1_1" name="PR1_1" onchange="" value=""><br>
+                    </span>
+					<span title="Amount">
+                        Amount: <input type="text" id="PR1_2" name="PR1_2" onchange="" value=""><br>
+                    </span>
+                    <span title="Last Draft">
+                        Last Draft: <input type="text" id="PR1_3" name="PR1_3" onchange="" value=""><br>
+                    </span>
+                    <span title="Draft date">
+                        Draft Date: <input type="text" id="PR1_4" name="PR1_4" onchange="" value=""><br>
+                    </span><br />
+
+
+                    <!-- Second Premium item-->
+                    <input type="checkbox" onclick="Addtext('PR2_1', 'PR2_2', 'PR2_3', 'PR2_4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the policy is on direct bill. PTD is ' + VariableArray.one + '. Billing mode is '
+        + VariableArray.two + ' and amount is ' + VariableArray.three + '. The last payment was received on ' + VariableArray.four + '.');" id="check" value="">Billing (Direct)<br>
+                    <span title="Paid to Date">
+                        Paid to Date: <input type="text" id="PR2_1" name="PR2_1" onchange="" value=""><br>
+                    </span>
+					<span title="Mode">
+                        Mode: <input type="text" id="PR2_2" name="PR2_2" onchange="" value=""><br>
+                    </span>
+                    <span title="Mode Amount">
+                        Mode Amount: <input type="text" id="PR2_3" name="PR2_3" onchange="" value=""><br>
+                    </span>
+                    <span title="Last Date Paid">
+                        Last Date Paid: <input type="text" id="PR2_4" name="PR2_4" onchange="" value=""><br>
+                    </span><br />
+
+
+                    <!-- Third Premium item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Removed policy from PPSP or WI created to remove policy from PPSP. Advised the caller of difference in premium amount. Advised that the policy defaults to a regular billing mode. Advised for the caller to watch their account as we need at least 10 business days to ensure draft does not go through. Advised that a bill will be generated.');" id="check" value="">PPSP Removal<br>
+                    <br />
+
+                    <!-- Fourth Premium item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Verified banking information. WI created. Advised the caller that the draft would occur on the next draft date unless the draft date was changed to two days after the policy was set up on PPSP. Gave PTD and amount required to pay policy current.');" id="check" value="">PPSP Restart<br>
+                    <br />
+
+                    <!-- Fifth Premium item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Informed caller of process of updating PPSP. Advised that will need to complete PPSP form to make PPSP account changes. Advised that they can send form via fax, mail, or bduf. Advised of how to complete form. Advised to select a day between the 1st and the 28th of the month. Advised that a voided check is not mandatory. Referred to website for PAC form. 1 week TAT.');" id="check" value="">PPSP Set Up<br>
+                    <br />
+
+                    <!-- Sixth Premium item-->
+                    <input type="checkbox" onclick="Addtext('PR6_1', 'PR6_2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the request will be made to change the draft date from the ' + VariableArray.one + ' to the ' + VariableArray.two + '. Informed the caller that we require a minimum of 10 business days prior to their next draft to ensure that it is completed on time');" id="check" value="">Draft Date Change<br>
+                    <span title="Old Draft Date">
+                        Old Draft Date: <input type="text" id="PR6_1" name="PR6_1" onchange="" value=""><br>
+                    </span>
+                    <span title="New Draft Date">
+                        New Draft Date: <input type="text" id="PR6_2" name="PR6_2" onchange="" value=""><br>
+                    </span><br />
+
+
+                    <!-- Seventh Premium item-->
+                    <input type="checkbox" onclick="Addtext('PR7_1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised the caller that payment was not honored. Return notice was received from the bank about the check on ' + VariableArray.one + '. Gave PTD. Informed caller about the grace period.');" id="check" value="">Returned Check/NSF<br>
+                    <span title="Date MM/DD/YYYY">
+                        Date: <input type="text" id="PR7_1" name="PR7_1" onchange="" value=""><br>
+                    </span><br />
+
+
+                    <!-- Eighth Premium item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised of the premium address.');" id="check" value="">Premium Address<br>
+                    <br />
+
+                    <!-- Ninth Premium item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that we do not accept payment by credit/debit card, it has to be sent by check, money order, or set the policy up on PPSP for auto draft.');" id="check" value="">Credit Card Payment<br>
+                    <br />
+
+                    <!-- Tenth Premium item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Verified address on file. Gave last bill date. WI created for new bill to be sent. Gave PTD. Informed caller of grace period.  Informed caller payment can be made without bill.');" id="check" value="">Rebill<br>
+                    <br />
+
+
+                </DIV>
+            </DIV>
+            <!-- This is the content of the T5 DIV item. -->
+            <DIV CLASS=conts ID=t5Contents>
+                <DIV class="infoCheckBox">
+
+                    <!-- BENEFITS ITEMS -->
+                    <!-- BENEFITS ITEMS -->
+                    <!-- BENEFITS ITEMS -->
+                    <!-- BENEFITS ITEMS -->
+                    <!-- BENEFITS ITEMS -->
+
+                    <!-- First Benefits item-->
+                    <input type="checkbox" onclick="Addtext('B1_1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+    AddToWrapUp('Advised that the plan type is ' + VariableArray.one + '.');" id="check" value="">Plan Type<br>
+                    <span title="Type">
+                        Type: <input type="text" id="B1_1" name="B1_1" onchange="" value=""><br>
+                    </span><br />
+
+
+                    <!-- Second Benefits item-->
+                    <input type="checkbox" onclick="Addtext('B2_1', 'B2_2', 'B2_3', 'B2_4', 'B2_5', 'B2_6', 'B2_7', '8', '9', '10');
+    AddToWrapUp('Advised that the Daily/Weekly/Monthly benefit is ' + VariableArray.one + '. The benefit multiplier is ' + VariableArray.two + '. The elimination period is ' + VariableArray.three + '.The claim maximum is ' + VariableArray.four + '.The policy is tax qualified ' + VariableArray.five + '. The inflation protection on the policy is ' + VariableArray.six + '. The restoration of benefits on the policy is ' + VariableArray.seven + '.');" id="check" value="">Benefit Breakdown<br>
+                    <span title="DB or INF DB / Weekly / Monthly">
+                        DB or INF DB / Weekly / Monthly: <input type="text" id="B2_1" name="B2_1" onchange="" value=""><br>
+                    </span>
+                    <span title="BM">
+                        BM: <input type="text" id="B2_2" name="B2_2" onchange="" value=""><br>
+                    </span>
+                    <span title="EP">
+                        EP: <input type="text" id="B2_3" name="B2_3" onchange="" value=""><br>
+                    </span>
+                    <span title="Claim Max">
+                        Claim Max: <input type="text" id="B2_4" name="B2_4" onchange="" value=""><br>
+                    </span>
+                    <span title="Tax Qualified">
+                        Tax Qualified: <input type="text" id="B2_5" name="B2_5" onchange="" value=""><br>
+                    </span>
+                    <span title="Inflation Protection">
+                        Inflation Protection: <input type="text" id="B2_6" name="B2_6" onchange="" value=""><br>
+                    </span>
+                    <span title="Restoration">
+                        Restoration: <input type="text" id="B2_7" name="B2_7" onchange="" value=""><br>
+                    </span>
+                    <br />
+
+					<!-- Third Benefits item-->
+                    <input type="checkbox" onclick="Addtext('1', '2', '3', '4', '5', '6', '7', '8', '9', '10');
+	AddToWrapUp('Explained the Waiver of Premium.');" id="check" value="">Waiver of Premium<br>
+                    <br />
+					
+                </DIV>
+            </DIV>
+        </div>
+    </form>
+
+</body>
+</html>

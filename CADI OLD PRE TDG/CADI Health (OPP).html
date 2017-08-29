@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<!-- saved from url=(0103)http://cnonet.conseco.ad/CIGWashington/cig_phs/Customer%20Service%20System%20Documents/CADI-Health.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+<meta http-equiv="x-ua-compatible" content="IE=Edge"> 
+
+<title>Caller Authentication and Documentation Interface - Health 
+</title>
+			
+<script language="JavaScript" type="text/javascript">
+
+	var noEscape = {};
+	
+	var VariableArray = {
+		one:"",
+		two:"",
+		three:"",
+		four:"",
+		five:"",
+		six:"",
+		seven:"",
+		eight:"",
+		nine:"",
+		ten:"",
+	};
+
+	function VerifyAllInfo() {
+
+		// Lets declare our variables!
+		
+		// Now, the policy number.
+			var PolNum = document.forms["Validate"]["PolicyNumberText"].value;
+		// The callers name.
+			var CallName = document.forms["Validate"]["CallersNameText"].value;
+		// The relationship.
+			var Relation = document.forms["Validate"]["RelationshipListbox"].value;
+		// The radio button choice
+			var Radio = document.forms["Validate"]["RadioButton"].value;
+		// The SSN
+			var SSN = document.forms["Validate"]["SSNText"].value;
+				SSN = SSN.length;
+		// The Insureds Name Checkbox
+			var InsuredNameCheck = document.forms["Validate"]["InsuredNameText"].checked;
+		// The Insureds DOB Checkbox
+			var InsuredDOBCheck = document.forms["Validate"]["InsuredDOBText"].checked;
+		// The Secondary Auth Type
+			var SecondAuth = document.forms["Validate"]["SecondaryAuthListbox"].value;
+		// The Secondary Auth DocID
+			var DocID = document.forms["Validate"]["SecondaryAuthText"].value;
+				DocID = DocID.length;
+		// The CTI Qualified Checkbox
+			var CTI = document.forms["Validate"]["CTIQualified"].checked;
+		// The Transferred Checkbox
+			var Transfer = document.forms["Validate"]["Transferred"].checked;
+				
+			if (PolNum != "" && CallName != "" && Relation == "Policy Owner/Patient" && (CTI == true || Transfer == true || (Radio == 1 || Radio == 2 && SSN == "4" ) && InsuredNameCheck == true && InsuredDOBCheck == true)) {
+			document.getElementById("InfoYes").innerHTML = "&#8226;All (except as specifically listed)";
+			document.getElementById("InfoNo").innerHTML = "&#8226;A guarantee of days the claim will be processed<br>&#8226;A guarantee of what will be covered under the policy (i.e., pre-approval)<br>&#8226;Full SSN #";
+			document.getElementById("Variable").innerHTML = "Verified";
+		}		
+			else if (PolNum != "" && CallName != "" && Relation == "Policy Owner/Non-Patient" && (CTI == true || Transfer == true || (Radio == 1 || Radio == 2 && SSN == "4" ) && InsuredNameCheck == true && InsuredDOBCheck == true)) {
+			document.getElementById("InfoYes").innerHTML = "&#8226; Policy Information:<br>  &#8226; Policy Coverage (Cancer, Heart, Accident, Critical Illness, etc.)<br>  &#8226;Premium Amounts<br>  &#8226;Premium Due Dates<br>  &#8226;Policy Status<br>&#8226;Information in a letter or EOB addressed to the Policy Owner<br>&#8226;Claims Received Dates<br>&#8226;Claims Paid Dates<br>&#8226;Claim Dollar Amounts<br>&#8226;Policy Maximum<br>&#8226;Maximum benefit for any one period of expense<br>&#8226;Policy Balance";
+			document.getElementById("InfoNo").innerHTML = "&#8226;A guarantee of days the claim will be processed<br>&#8226;A guarantee of what will be covered under the policy (i.e., pre-approval)<br>&#8226;Full SSN #<br>&#8226;If Policy Owner calling about covered dependent&#42;, do not provide Health Status/Condition:<br>  &#8226;Diagnosis<br>  &#8226;Assessment Scores<br>  &#8226;Medical Records<br>&#8226; Payment for health services provided to the Insured<br>&#8226; Provider name, dates of service and activities<br>  &#42; Legal guardians, conservators and parents of minor children are entitled to all information pertaining to those for whom they have a legal responsibility.";
+			document.getElementById("Variable").innerHTML = "Verified";
+		}	
+			else if (PolNum != "" && CallName != "" && Relation == "Spouse/Patient" && (Transfer == true || (Radio == 1 || Radio == 2 && SSN == "4" ) && InsuredNameCheck == true && InsuredDOBCheck == true)) {
+			document.getElementById("InfoYes").innerHTML = "&#8226;All (except as specifically listed)";
+			document.getElementById("InfoNo").innerHTML = "&#8226;A guarantee of days the claim will be processed<br>&#8226;A guarantee of what will be covered under the policy (i.e., pre-approval)<br>&#8226;Full SSN #";
+			document.getElementById("Variable").innerHTML = "Verified";
+		}			
+			else if (PolNum != "" && CallName != "" && Relation == "Spouse/Non-Patient" && (Transfer == true || (Radio == 1 || Radio == 2 && SSN == "4" ) && InsuredNameCheck == true && InsuredDOBCheck == true)) {
+			document.getElementById("InfoYes").innerHTML = "Minimum amount necessary to accomplish the intended purpose of the request:<br><br>&#8226; Policy information:<br>  &#8226; Policy Coverage (Cancer, Heart, Accident, Critical Illness, etc.)<br>  &#8226; Premium amounts<br>  &#8226; Premium Due Dates<br>  &#8226; Policy Status<br>&#8226; Claims Received Dates<br>&#8226; Claims Paid Dates";
+			document.getElementById("InfoNo").innerHTML = "&#8226;A guarantee of days the claim will be processed<br>&#8226;A guarantee of what will be covered under the policy (i.e., pre-approval)<br>&#8226;Full SSN #<br>&#8226;If calling about covered insured, do not provide Health Status/Condition:<br>  &#8226;Diagnosis<br>  &#8226;Assessment Scores<br>  &#8226;Medical Records<br>&#8226; Payment for health services provided to the Insured<br>&#8226; Provider name, dates of service and activities<br>&#8226; Policy Maximum<br>&#8226; Maximum benefit for any one period of expense<br>&#8226; Policy Balance";
+			document.getElementById("Variable").innerHTML = "Verified";
+		}			
+			else if (PolNum != "" && CallName != "" && Relation == "Dependant/Patient" && (Transfer == true || (Radio == 1 || Radio == 2 && SSN == "4" ) && InsuredNameCheck == true && InsuredDOBCheck == true)) {
+			document.getElementById("InfoYes").innerHTML = "&#8226;All (except as specifically listed)";
+			document.getElementById("InfoNo").innerHTML = "&#8226;A guarantee of days the claim will be processed<br>&#8226;A guarantee of what will be covered under the policy (i.e., pre-approval)<br>&#8226;Full SSN #";
+			document.getElementById("Variable").innerHTML = "Verified";
+		}			
+			else if (PolNum != "" && CallName != "" && Relation == "Dependant/Non-Patient" && (Transfer == true || (Radio == 1 || Radio == 2 && SSN == "4" ) && InsuredNameCheck == true && InsuredDOBCheck == true)) {
+			document.getElementById("InfoYes").innerHTML = "Minimum amount necessary to accomplish the intended purpose of the request:<br><br>&#8226; Policy information:<br>  &#8226; Policy Coverage (Cancer, Heart, Accident, Critical Illness, etc.)<br>  &#8226; Premium amounts<br>  &#8226; Premium Due Dates<br>  &#8226; Policy Status<br>&#8226; Claims Received Dates<br>&#8226; Claims Paid Dates";
+			document.getElementById("InfoNo").innerHTML = "&#8226;A guarantee of days the claim will be processed<br>&#8226;A guarantee of what will be covered under the policy (i.e., pre-approval)<br>&#8226;Full SSN #<br>&#8226;If calling about covered insured, do not provide Health Status/Condition:<br>  &#8226;Diagnosis<br>  &#8226;Assessment Scores<br>  &#8226;Medical Records<br>&#8226; Payment for health services provided to the Insured<br>&#8226; Provider name, dates of service and activities<br>&#8226; Policy Maximum<br>&#8226; Maximum benefit for any one period of expense<br>&#8226; Policy Balance";
+			document.getElementById("Variable").innerHTML = "Verified";
+		}			
+			else if (PolNum != "" && CallName != "" && Relation == "Non-Covered Family" && (Transfer == true || (Radio == 1 || Radio == 2 && SSN == "4" ) && InsuredNameCheck == true && InsuredDOBCheck == true)) {
+			document.getElementById("InfoYes").innerHTML = "Minimum amount necessary to accomplish the intended purpose of the request:<br><br>&#8226; Policy information:<br>  &#8226; Policy Coverage (Cancer, Heart, Accident, Critical Illness, etc.)<br>  &#8226; Premium amounts<br>  &#8226; Premium Due Dates<br>  &#8226; Policy Status<br>&#8226; Claims Received Dates<br>&#8226; Claims Paid Dates";
+			document.getElementById("InfoNo").innerHTML = "&#8226;A guarantee of days the claim will be processed<br>&#8226;A guarantee of what will be covered under the policy (i.e., pre-approval)<br>&#8226;Full SSN #<br>&#8226;If calling about covered insured, do not provide Health Status/Condition:<br>  &#8226;Diagnosis<br>  &#8226;Assessment Scores<br>  &#8226;Medical Records<br>&#8226; Payment for health services provided to the Insured<br>&#8226; Provider name, dates of service and activities<br>&#8226; Policy Maximum<br>&#8226; Maximum benefit for any one period of expense<br>&#8226; Policy Balance";
+			document.getElementById("Variable").innerHTML = "Verified";
+		}	
+			else if (PolNum != "" && CallName != "" && Relation == "Third Party/Other" && SecondAuth == "Verbal Auth from Insured" && (Radio == 1 || Radio == 2 && SSN == "4" ) && InsuredNameCheck == true && InsuredDOBCheck == true) {
+			document.getElementById("InfoYes").innerHTML = "&#8226; Only information that has been authorized by the PolicyOwner via verbal authorization";
+			document.getElementById("InfoNo").innerHTML = "&#8226;A guarantee of days the claim will be processed<br>&#8226;A guarantee of what will be covered under the policy (i.e., pre-approval)<br>&#8226;Full SSN #<br>&#8226; Information that has not been authorized by the PolicyOwner via verbal authorization";
+			document.getElementById("Variable").innerHTML = "Verified";
+		}	
+			else if (PolNum != "" && CallName != "" && Relation == "Third Party/Other" && SecondAuth == "Valid CIR on file for caller*" && DocID != "0" && (Radio == 1 || Radio == 2 && SSN == "4" ) && InsuredNameCheck == true && InsuredDOBCheck == true) {
+			document.getElementById("InfoYes").innerHTML = "&#8226; Only information that has been authorized by the PolicyOwner via the Third Party Authorization form";
+			document.getElementById("InfoNo").innerHTML = "&#8226;A guarantee of days the claim will be processed<br>&#8226;A guarantee of what will be covered under the policy (i.e., pre-approval)<br>&#8226;Full SSN #<br>&#8226; Information that has not been authorized by the PolicyOwner via the Third Party Authorization form";
+			document.getElementById("Variable").innerHTML = "Verified";
+		}	
+			else {
+			document.getElementById("InfoYes").innerHTML = "&#8226; What is needed to file a claim<br>&#8226; What the generic policy covers (nursing home, HHC, etc.)<br>&#8226; Elimination period";
+			document.getElementById("InfoNo").innerHTML = "&#8226; Policy Maximum<br>&#8226; Maximum benefit for any one period of expense<br>&#8226; Policy balance<br>&#8226; Health Status/Condition<br>  &#8226; Diagnosis<br>  &#8226; Assessment Scores<br>  &#8226; Medical Records<br>&#8226; Policy Information:<br>  &#8226; Policy Coverage<br>  &#8226; Premium Amounts<br>  &#8226; Premium Due Dates<br>  &#8226; Policy Status<br>&#8226; Claims Received Dates<br>&#8226; Claims Paid Dates";
+			document.getElementById("Variable").innerHTML = "Not Verified";
+		}
+	}
+	
+	function ValidateOther() {
+	 
+	 // The callers name variable.
+		var CallName = document.forms["Validate"]["CallersNameText"].value;
+	 // The relationship variable.
+		var Relation = document.forms["Validate"]["RelationshipListbox"].value;
+	}
+	
+	function AddToCADI(){
+		
+		// Lets declare our variables!
+
+		// First stop, the overarching variable.
+			var CADI;
+		// Now, the policy number.
+			var PolNum = document.forms["Validate"]["PolicyNumberText"].value;
+		// The callers name.
+			var CallName = document.forms["Validate"]["CallersNameText"].value;
+		// The relationship.
+			var Relation = document.forms["Validate"]["RelationshipListbox"].value;
+				if (Relation == "Policy Owner/Patient" || Relation == "Policy Owner/Non-Patient"){
+					Relation = "Policy Owner";
+				}
+				else if (Relation == "Spouse/Patient" || Relation == "Spouse/Non-Patient"){
+					Relation = "Spouse";
+				}
+				else if (Relation == "Dependant/Patient" || Relation == "Dependant/Non-Patient"){
+					Relation = "Dependant";
+				}	
+				else{
+				}
+		// The radio button choice
+			var Radio = document.forms["Validate"]["VerifyRadio"].value;
+		// The Insureds Name Checkbox
+			var InsuredNameCheck = document.forms["Validate"]["InsuredNameText"].value;
+		// The Insureds DOB Checkbox
+			var InsuredNameCheck = document.forms["Validate"]["InsuredDOBText"].value;
+		// The CTI Qualified Checkbox
+			var CTI = ""
+		// The Transferred Checkbox
+			var Transfer = ""
+		// The CTI Qualified Checkbox
+			var CTICheck = document.forms["Validate"]["CTIQualified"].checked;
+				if (CTICheck == true && (Relation == "Policy Owner/Patient" || Relation == "Policy Owner/Non-Patient")) {
+					CTI = document.forms["Validate"]["CTIQualified"].value;
+				}
+		// The Transferred Checkbox
+			var TransferCheck = document.forms["Validate"]["Transferred"].checked;
+				if (TransferCheck == true) {
+					Transfer = document.forms["Validate"]["Transferred"].value;
+				}
+		// The Secondary Auth Type
+			var SecondAuth = "";
+			var SecondaryAuth = document.forms["Validate"]["SecondaryAuthListbox"].value;
+				if (SecondaryAuth != "") {
+						SecondAuth =  "  || Secondary Authorization: " + SecondaryAuth;
+				}
+		// The Secondary Auth DocID
+			var DocID = document.forms["Validate"]["SecondaryAuthText"].value;	
+		// Lastly, whether or not the caller was verified
+			var Verified = document.forms["AuthorizedInfo"]["Variable"].value;
+	
+			CADI = "Policy Number: " + PolNum + " || " + CallName + " || " + "(" + Relation + ") || " + Verified + SecondAuth + " " + DocID + " || " + CTI + Transfer;
+			window.clipboardData.setData('text', CADI + document.getElementById('CADIText').innerText );
+			
+			CheckFields();
+		}
+		
+		
+		//Let's make sure that we didn't forget to input the Policy Number, Caller Name, and Relationship
+	function CheckFields() {	
+	
+		// Now, the policy number.
+			var PolNum = document.forms["Validate"]["PolicyNumberText"].value;
+		// The callers name.
+			var CallName = document.forms["Validate"]["CallersNameText"].value;
+		// The relationship.
+			var Relation = document.forms["Validate"]["RelationshipListbox"].value;
+				if (Relation == "Policy Owner/Patient" || Relation == "Policy Owner/Non-Patient"){
+					Relation = "Policy Owner";
+				}
+				else if (Relation == "Spouse/Patient" || Relation == "Spouse/Non-Patient"){
+					Relation = "Spouse";
+				}
+				else if (Relation == "Dependant/Patient" || Relation == "Dependant/Non-Patient"){
+					Relation = "Dependant";
+				}	
+				else{
+				}
+						
+		if (PolNum == "") {
+				var TempPolNum = prompt ("Please enter a policy number.", "");
+				document.forms["Validate"]["PolicyNumberText"].value = TempPolNum;
+			}
+		if (CallName == "") {
+				var TempCallName = prompt ("Please enter a caller name.", "");
+				document.forms["Validate"]["CallersNameText"].value = TempCallName;
+			}
+		if (Relation == "") {
+				alert ("Please enter a relationship.");
+			}
+		else {
+		}
+	}
+		
+
+		// This is the section where we deal with accidentally hitting "Escape" when making the wrap up. Here we grab the key being pressed.
+	function GetKey(e) {
+		var code;
+			noEscape.CADI = document.getElementById('CADIText').innerText;
+			if (!e) var e = window.event;
+			if (e.keyCode) code = e.keyCode;
+			else if (e.which) code = e.which;
+				setTimeout('ShowTree('+code+');',100);
+	}
+		
+		// This is the section where we deal with accidentally hitting "Escape" when making the wrap up. Here we check to see if it is the "Escape" key, and then replace the text. 
+	function ShowTree(character, esc){
+		if (character == 27){
+			document.getElementById("CADIText").innerHTML = noEscape.CADI;
+		}
+	}
+		
+		// Here, we add the checked box to the wrap up.
+	function AddToWrapUp(name){
+	
+		CADI = document.getElementById("CADIText").value;
+		document.getElementById("CADIText").innerHTML = CADI + name + " // ";
+	}
+	
+	// Here we are very careful resetting the form.
+	function ResetTimeout(){
+		setTimeout("VerifyAllInfo()", 100);
+		}
+	
+ </script>
+</head>
+
+<body onload="VerifyAllInfo()">
+
+<!-- Create a large enough table for formatting purposes -->
+<table width="700" height="500">
+ 
+<tbody><tr><td style="width:200px;height:670px;border:5px solid red;font-size:10pt;font-family:Arial;float:left;">
+
+<form name="Validate" action="http://cnonet.conseco.ad/CIGWashington/cig_phs/Customer%20Service%20System%20Documents/CADI-Health.html">
+
+<!-- This is the first form on the page, which is explicitly for getting some general information about the caller through Textbox and Listbox controls. -->
+<strong> Caller's Information: </strong>
+<br>
+<!-- Textboxes to get some info on the caller -->
+Policy Number: <input type="text" id="PolicyNumberText" name="PolicyNumberText" onchange="VerifyAllInfo()"><br>
+Caller's Name: <input type="text" id="CallersNameText" name="CallersNameText" onchange="VerifyAllInfo()"><br>
+<br>
+<strong> Relationship: </strong> 
+<br>
+
+<!-- A listbox to indicate the relationship between the caller and the insured -->
+<select name="RelationshipListbox" size="8" onclick="ValidateOther();VerifyAllInfo();">
+  <option>Policy Owner/Patient</option>
+  <option>Policy Owner/Non-Patient</option>
+  <option>Spouse/Patient</option>
+  <option>Spouse/Non-Patient</option>
+  <option>Dependant/Patient</option>
+  <option>Dependant/Non-Patient</option>
+  <option>Non-Covered Family</option>
+  <option>Third Party/Other</option>
+</select>
+<br>
+<br>
+<strong> Verify:</strong>
+<br>
+
+<!-- Were they qualified before they got to the rep? -->
+<input type="checkbox" name="CTIQualified" id="check" value="Received a call which was CTI pop verified. // " onclick="VerifyAllInfo()">CTI Qualified<br>
+<input type="checkbox" name="Transferred" id="check" value="Received a transferred call that was qualified by the off-shore representative. // " onclick="VerifyAllInfo()">Transferred and Qualified<br>
+
+
+<!-- These are radio buttons to indicate whether the caller provided the policy number or the Insured's Social Security Number. -->
+<input type="radio" name="VerifyRadio" id="VR1" value="1" onclick="document.getElementById(&#39;RadioButton&#39;).innerHTML = 1;VerifyAllInfo();"> Policy Number <br>
+<!-- These are radio buttons to indicate whether the caller provided the policy number or the Insured's Social Security Number. -->
+<input type="radio" name="VerifyRadio" id="VR2" value="2" onclick="document.getElementById(&#39;RadioButton&#39;).innerHTML = 2;VerifyAllInfo();"> Last 4 digits of the Insured's SSN
+
+<!-- Textbox to get the SSN. -->
+<input type="text" name="SSNText" onkeyup="VerifyAllInfo()"><br>
+
+<input type="checkbox" name="InsuredNameText" id="check" value="" onclick="VerifyAllInfo()">Insured's Name<br>
+<input type="checkbox" name="InsuredDOBText" id="check" value="" onclick="VerifyAllInfo()">Insured's DOB<br><br>
+
+
+<!-- This is the textarea in which we can hold information about which radio button is checked -->
+<textarea id="RadioButton" name="RadioButton" style="display:none;"></textarea>
+
+<strong>Secondary Authorization:</strong>
+<br>
+
+<!-- A listbox to indicate the secondary form of authorization which might be used. -->
+<select name="SecondaryAuthListbox" size="2" onchange="VerifyAllInfo()">
+    <option>Verbal Auth from Insured</option>
+	<option>Valid CIR on file for caller*</option>
+	<option></option>
+</select>
+<br>
+<br>
+<strong>Filenet ImageID:</strong>
+<br>
+
+<!-- Textbox to get the ISRA DocID of the secondary authorization on file. -->
+<input type="text" name="SecondaryAuthText" onkeyup="VerifyAllInfo()" value=""><br>
+
+
+<!-- Reset button for the form -->
+<br>
+<input type="reset" value="Clear" onclick="ResetTimeout()">
+
+</form>
+</td>
+
+<td id="PII" style="width:200px;height:550px;border:5px solid blue;font-size:10pt;font-family:Arial;float:middle;">
+
+<form name="AuthorizedInfo" action="http://cnonet.conseco.ad/CIGWashington/cig_phs/Customer%20Service%20System%20Documents/CADI-Health.html">
+
+<!-- Now, let's list out what exactly we are allowed to say. -->
+
+<strong> Info We Can Provide </strong>
+<br>
+<textarea id="InfoYes" readonly="" style="height:220px;width:200px;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">• What is needed to file a claim&lt;br&gt;• What the generic policy covers (nursing home, HHC, etc.)&lt;br&gt;• Elimination period</textarea>
+<br>
+
+<strong> Info We Can't Provide </strong>
+<br>
+<textarea id="InfoNo" readonly="" style="height:270px;width:200px;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">• Policy Maximum&lt;br&gt;• Maximum benefit for any one period of expense&lt;br&gt;• Policy balance&lt;br&gt;• Health Status/Condition&lt;br&gt;  • Diagnosis&lt;br&gt;  • Assessment Scores&lt;br&gt;  • Medical Records&lt;br&gt;• Policy Information:&lt;br&gt;  • Policy Coverage&lt;br&gt;  • Premium Amounts&lt;br&gt;  • Premium Due Dates&lt;br&gt;  • Policy Status&lt;br&gt;• Claims Received Dates&lt;br&gt;• Claims Paid Dates</textarea>
+<br>
+
+<!-- This is the textarea in which we can pass variables between functions -->
+<textarea id="Variable" style="display:none;">Not Verified</textarea>
+
+</form>
+</td>
+
+<td style="width:300px;height:550px;border:5px solid grey;font-size:9pt;font-family:Arial;">
+<form id="ListCheckBox">
+
+<br>
+<strong>Initial Claim Call</strong><br><br>
+
+<!-- Check boxes to add Initial Claim Call Items to the CADI variable -->
+<input type="checkbox" onclick="AddToWrapUp(&#39;Sent claim forms to caller.&#39;)" id="check" value="">Sent Forms<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that they needed to complete the claim form, with the exception of the Physicians statement, which can be given to any treating Physician.&#39;)" id="check" value="">Fill out Claim Form<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that we needed a pathology report that shows a positive diagnosis of cancer.&#39;)" id="check" value="">Pathology Report<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that they needed to send in all itemized statements which contain Patient information, Dates of service, Cpt/Procedure codes, ICD-9 or Diagnosis codes, and Charges.&#39;)" id="check" value="">Itemized Bills<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller to provide any other supporting documentation including the Accident Report/Police Report, Operative report, Surgeon bills, Radiology Report, Admit/Discharge Summary, etc.&#39;)" id="check" value="">Accident Supporting Documentation<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller of our fax number.&#39;)" id="check" value="">Fax Number<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller of our mailing address.&#39;)" id="check" value="">Mailing Address<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller of our e-mail address.&#39;)" id="check" value="">Email Address<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller of SLA and mail TAT.&#39;)" id="check" value="">SLA Documents Submitted<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that they could check their claim status at www.washingtonnational.com or by 24 hour IVR at 800-541-2254, using option 1.&#39;)" id="check" value="">Check claim IVR/Online<br>
+
+<br>
+
+<strong>Miscellaneous</strong><br><br>
+
+<!--- Check boxes to add Miscellaneous Claim items to the CADI variable --->
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller to write policy number on all documents that they submit.&#39;)" id="check" value="">Policy Number<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that the Express Pay/First Occurrence benefit is only one of several benefits on the policy, and is paid immediately when we find out about the diagnosis of internal cancer. The rest of the claim is reviewed separately.&#39;)" id="check" value="">Express Pay/First Occurrence<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that Abandoned or Closed claim letters are auto generated and that the caller can send in the documents requested for review.&#39;)" id="check" value="">Closed Claim Letters<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the call that a clinical diagnosis requires a letter from the physician which states that there is no pathology report, why there is no pathology report, and exactly how the cancer was diagnosed.&#39;)" id="check" value="">Clinical Diagnosis<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that because the policy is within the first 2yrs of its effective date, we are reviewing Medical Records. Advised the caller that because a decision is contingent on receiving and reviewing this documentation, no turn around time could be given.&#39;)" id="check" value="">Within Contestability Period<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that the Claims department will make the final determination once they have reviewed the submitted documents along with the policy language.&#39;)" id="check" value="">Claims will determine<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that a new claim form is not necessary for same diagnosis.&#39;)" id="check" value="">Same Diagnosis<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller to allow 5-7 mailing days to receive the document by mail.&#39;)" id="check" value="">SLA Mailing<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller to allow 24 business hours for the documents to be uploaded into our system.&#39;)" id="check" value="">SLA Fax &amp; Email<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that a claim will not be denied solely on the basis of late filing. Advised the caller to submit their claim and allow the claims adjustors to review, compare to the policy language, and then the decision will be determined within (provide SLA).&#39;)" id="check" value="">Filing Deadline<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller to leave their Policy Number, Name , Detailed information, and Contact information, and to allow a 48 business hour turn around time for the supervisor to respond to the voice-mail.&#39;)" id="check" value="">Supervisor Voice-mail<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that to claim the transportation benefit, we need a document with the home address, physicians or hospitals address, and the dates of travel.&#39;)" id="check" value="">Transport Benefit<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller that surgical benefits are calculated by cpt/procedure code, difficulty, how extensive it is, how long it takes, how life threatening, and the surgical schedule.&#39;)" id="check" value="">Calc Surgical Benefits<br>
+<input type="checkbox" onclick="AddToWrapUp(&#39;Advised the caller to include all pertinent claim related information. This can be any additional information the policyowner/claimant may feel will give more details on the original claim. In addition, a signed letter stating their side of the dispute is needed. Advised the caller the turnaround time for a claim appeal is 10-15 business days and to allow an additional 5-7 mailing days for mailing.&#39;)" id="check" value="">Written Appeal<br><br>
+
+<!-- This button sends us to the Pay by Phone options -->
+<a target="_blank" href="http://extteamsites.conseco.com/sites/LearningLink2/Published%20ELearning%20Modules/OPP%20Resources/Online%20Premium%20Payment%20Decision%20Tree%20-%20Storyline%20output/story.html">Online Premium Payments Eligibility</a>
+
+<br>
+
+ </td>
+
+ </tr><tr>
+ 
+<td style="Height:80px;border:5px solid blue;font-size:8pt;font-family:Arial;float:bottom;" colspan="3">
+
+
+
+Wrap Up:<br>
+
+<!-- This is a the area where the user will type out their Wrap Up. -->
+<textarea name="CADIText" id="CADIText" style="height:80px;width:95%;font-size:8pt;font-family:Arial;" onkeydown="GetKey()"></textarea><br>
+
+<!-- This button triggers my AddToCADI function to display the status of the CADI variable. -->
+<input type="button" onclick="AddToCADI()" id="button" value="Copy">
+
+<!-- This button resets the AuthorizedInfo form -->
+<input type="reset" value="Clear" onclick="document.getElementById('CADIText').innerHTML = ''">
+
+<!-- This button sends us to the Life CADI -->
+<input type="button" onclick="location.href=&#39;http://cnonet.conseco.ad/CIGWashington/cig_phs/Customer%20Service%20System%20Documents/CADI-Life.html&#39;;" value="Life CADI">
+
+ </form>
+
+</td>
+</tr>
+
+</tbody></table>
+
+
+
+<!-- This website has been updated by Matt Paul and Nichole Sherrill. For more information, please contact Matt Paul. --></body></html>

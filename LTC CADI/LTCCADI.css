@@ -1,0 +1,75 @@
+﻿body {
+}
+.conts {
+    visibility: hidden
+}
+
+.tab {
+    border-top: solid thin #E0E0E0;
+    border-right: solid thin gray;
+    border-left: solid thin #E0E0E0;
+    font-family: Verdana;
+    font-size: 10pt;
+    text-align: center;
+    font-weight: normal;
+    background-color: #C0C0C0;
+}
+
+.selTab {
+    border-left: solid thin white;
+    border-top: solid thin white;
+    border-right: solid thin black;
+    font-weight: bold;
+    text-align: center;
+    background-color: grey;
+}
+.infoCheckBox {
+    padding-left: .5em;
+}
+#CADIText {
+    height: 100px;
+    width: 450px;
+    font-size: 8pt;
+    font-family: Arial;
+    float: left;
+}
+#cadiAuth {
+    float: left;
+}
+#verification {
+    float: left;
+    width: 500px;
+}
+
+#infoRelease::after {
+    float: left;
+    height: 200px;
+    width: 500px;
+}
+
+#divcadiText {
+    float: left;
+    width: 500px;
+    clear: left;
+}
+#divLeft {
+    float: left;
+    border: 1px solid black;
+    width: 500px;
+    height: 630px;
+}
+
+#divCenter {
+    float: left;
+    border: 1px solid black;
+    height: 630px;
+}
+#divRight {
+    border: 1px solid black;
+    float: left;
+    height: 850px;
+    width: 300px;
+}
+#Docs {
+    height: 130px;
+}

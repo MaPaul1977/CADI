@@ -1,0 +1,553 @@
+<!DOCTYPE html PUBLIC>
+<html lang="en">
+
+<head>
+
+<meta http-equiv="x-ua-compatible" content="IE=Edge"/> 
+
+<title>
+	Caller Authentication and Documentation Interface - Xerox
+</title>
+
+<style>
+.conts	{	visibility:hidden
+		}
+.tab	{	border-top:solid thin #E0E0E0;
+			border-right:solid thin gray;
+			border-left:solid thin #E0E0E0;
+			font-family:Verdana;
+			font-size:10pt;
+			text-align:center;
+			font-weight:normal;
+			background-color:#C0C0C0;
+		}
+
+.selTab	{	border-left:solid thin white;
+			border-top:solid thin white;
+			border-right:solid thin black;
+			font-weight:bold;
+			text-align:center;
+			background-color:grey;
+		}
+</style>
+
+</head>
+
+<body onclick="changeTabs()" onload="init()">
+
+<!-- Create a large enough table for formatting purposes -->
+<table width="870">
+<form id="Validate">
+<tr style="font-size:9pt;font-family:Arial;">
+
+<td style="width:300px;border:1px solid black;">
+
+<br><br>
+
+<!-- This is the first form on the page, which is explicitly for getting some general information about the caller through Textbox and Listbox controls. -->
+
+<strong> Caller's Information: </strong>
+<br>
+
+<!-- Textboxes to get some info on the caller -->
+Policy Number: <input type="text" id="PolicyNumberText" name="PolicyNumberText" onchange="AuthorizationCheck()"><br>
+Caller's Name: <input type="text" id="CallersNameText" name="CallersNameText" onchange="AuthorizationCheck()" style="margin-left:4px;"><br>
+
+<strong> Relationship: </strong> 
+
+<!-- A listbox to indicate the relationship between the caller and the insured -->
+<select id="RelationshipListbox" name="RelationshipListbox" size="1" onchange="AuthorizationCheck()" style="margin-left:7px;">
+  <option> </option>
+  <option>Owner</option>
+  <option>Insured</option>
+  <option>Payor</option>
+  <option>Beneficiary</option>
+  <option>POA or Executor</option>
+  <option>Funeral Home</option>
+  <option>Other</option>
+</select>
+
+<br><br>
+
+<!-- Are there any other qualifications? -->
+<strong> Secondary Authorization </strong>
+<select id="OtherAuthList" name="OtherAuthList" size="1" onchange="AuthorizationCheck()" style="margin-left:7px;">
+  <option> </option>
+  <option>Verbal Authorization</option>
+  <option>Confidential Information Release Form</option>
+  <option>Legal Authorization</option>
+  <option>Assignment</option>
+  <option>1035x</option>
+</select>
+
+Document Number:<input type="text" id="OtherAuthText" name="OtherAuthText" onchange="AuthorizationCheck()"> <br>
+
+<br>
+
+<table>
+<tr>
+<td style="width:300px;border:1px solid black;">
+
+<strong>Deceased?</strong><br>
+
+<input type="checkbox" name="OwnerDODBox" id="chkOwDOD" value="" onchange="AuthorizationCheck()"> Owner 
+	<span title="Date of Death (MM/DD/YYY)">
+		<input type="text" name="OwnerDODText" id="OwnerDODText" value="" onchange="AuthorizationCheck()" style="margin-left:4px;"> <br>
+	</span>
+		
+<input type="checkbox" name="InsuredDODBox" id="chkInsDOD" value="" onchange="AuthorizationCheck()"> Insured 
+	<span title="Date of Death (MM/DD/YYY)">
+		<input type="text" name="InsuredDODText" value="" onchange="AuthorizationCheck()"> <br>
+	</span>
+</td>
+</tr>
+</table>
+
+</td>
+
+<td style="width:300px;border:1px solid black;">
+
+<strong> Validate </strong><br>
+
+<input type="checkbox" name="CTIBox" id="chkCTI" value="1" onchange="AuthorizationCheck()"> CTI Pop Auth or Qualified Transfer <br>
+<input type="checkbox" name="Checkbox" id="chkPolNum" value="1" onchange="AuthorizationCheck()"> Policy Number <br>
+<input type="checkbox" name="Checkbox" id="chkSSN" value="1" onchange="AuthorizationCheck()"> Owner's SSN or Tax ID (Complete) 
+		<input type="text" name="SSNText" id="SSNText" value="" onchange="AuthorizationCheck()"> <br>
+<input type="checkbox" name="Checkbox" id="chkOwName" value="1" onchange="AuthorizationCheck()"> Owner's Name <br>
+<input type="checkbox" name="Checkbox" id="chkZip" value="1" onchange="AuthorizationCheck()"> Owner's Zip Code <br>
+<input type="checkbox" name="Checkbox" id="chkInsDOB" value="1" onchange="AuthorizationCheck()"> Insured's DOB <br>
+<input type="checkbox" name="Checkbox" id="chkOwADDY" value="1" onchange="AuthorizationCheck()"> Owner's Street Address <br>
+<input type="checkbox" name="Checkbox" id="chkOwNum" value="1" onchange="AuthorizationCheck()"> Owner's Phone Number (10 digit) <br>
+<input type="checkbox" name="Checkbox" id="chkINSName" value="1" onchange="AuthorizationCheck()"> Insured's Name (for death notification) <br>
+
+
+
+</td>
+
+<td style="width:250px;height:650px;border:1px solid black;font-size:9pt;font-family:Arial;" rowspan="3">
+
+<DIV STYLE="border:none thin gray">
+
+
+<TABLE STYLE="width:100%; height:300" CELLPADDING=0 CELLSPACING=0>
+	<TR>
+		<TD ID=t1 CLASS=selTab HEIGHT=25>Non-Fi</TD>
+		<TD ID=t2 CLASS=tab>Fin</TD>
+		<TD ID=t3 CLASS=tab>Prem</TD>
+		<TD ID=t4 CLASS=tab>Clm</TD>
+		<TD ID=t5 CLASS=tab>Misc</TD>
+		<TD ID=t6 CLASS=tab>Tax</TD>
+		<TD ID=t7 CLASS=tab>Gen</TD>
+	</TR>
+	<TR>
+		<TD ID=t1base STYLE="height:2; border-left:solid thin white"></TD>
+		<TD ID=t2base STYLE="height:2; background-color:white;"></TD>
+		<TD ID=t3base STYLE="height:2; background-color:white"></TD>
+		<TD ID=t4base STYLE="height:2; background-color:white"></TD>
+		<TD ID=t5base STYLE="height:2; background-color:white"></TD>
+		<TD ID=t6base STYLE="height:2; background-color:white"></TD>
+		<TD ID=t7base STYLE="height:2; background-color:white; border-right:solid thin white"></TD>
+	</TR>
+
+
+	<TR>
+		<TD HEIGHT="*" COLSPAN=7 ID=tabContents
+									STYLE="	border-left:solid thin white;
+											border-bottom:solid thin white;
+											border-right:solid thin white">sample contents</TD>
+
+	</TR>
+</TABLE>
+</DIV>
+
+ </td>
+
+</tr>
+
+
+<tr>
+<td id="PII" colspan=2 style="height:200px;border:1px solid black;">
+
+<!-- Now, let's list out what exactly we are allowed to say. -->
+
+<!-- These are the textareas which will indicate what PII we are allowed to release to the caller -->
+Non-Financial:<br>
+<textarea id=NonFi readonly style="width:600px;height:15%;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">Correspondence Confirmation [Incoming]</textarea><br>
+Premium:<br>
+<textarea id=Prem readonly style="width:600px;height:15%;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">No disclosure</textarea><br>
+Financial:<br>
+<textarea id=Finance readonly style="width:600px;height:15%;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">No disclosure</textarea><br>
+Claims:<br>
+<textarea id=Claim readonly style="width:600px;height:15%;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">No disclosure</textarea><br>
+
+<br>
+</td>
+</tr>
+<tr>
+<td id="Docs" colspan=2 style="height:130px;border:1px solid black;">
+
+<strong>Documentation:</strong><br>
+
+<!-- This is a the area where the user will type out their Wrap Up. -->
+<textarea name="CADIText" id=CADIText style="height:100px;width:500px;font-size:8pt;font-family:Arial;float:left;" ></textarea>
+
+<!-- This button triggers my AddToCADI function to display the status of the CADI variable. -->
+<input type="button" onclick="AddToCADI()" id="button" value="Copy" style="float:center;">
+
+<!-- This button resets the AuthorizedInfo form --> 
+<input type="reset" Value="Reset" style="float:center;">
+
+</td>
+</tr>
+
+
+
+
+</table>
+
+<!-- This is the content of the T1 DIV item. -->
+<DIV CLASS=conts ID=t1Contents>
+<DIV style="height:620px;">
+
+<br><br><br>
+
+<input type="checkbox" onclick="Addtext('AddressChange', 'PhoneChange', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Address updated to ' + VariableArray.one + '. Phone number updated to ' + VariableArray.two + '.');" id="check" value="">Address Change<br>
+	<span title="Address">
+		Address: <input type="text" id="AddressChange" name="AddressChange" onchange="" value=""><br>
+	</span>
+	<span title="Phone Number: (555) 555-5555">
+		Phone: <input type="text" id="PhoneChange" name="PhoneChange" onchange="" value=""><br>
+	</span>
+<br>
+<input type="checkbox" onclick="AddToWrapUp('Gave agent&#8217;s name. Gave agent/BSO address/phone number and transferred for additional information.')" id="check" value="">Agent Information<br>
+<br>
+<input type="checkbox" onclick="Addtext('BeneficiaryChange', '2', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Advised current beneficiary is listed as ' + VariableArray.one + '. Advised to complete Policy Information Form to change beneficiary. Advised can send form via fax, mail, or e-mail. Advised how to complete form.')" id="check" value="">Beneficiary Change<br>
+	<span title="Beneficiary">
+		Beneficiary: <input type="text" id="BeneficiaryChange" name="BeneficiaryChange" onchange="" value=""><br>
+	</span>
+<br>
+<input type="checkbox" onclick="AddToWrapUp('Advised caller that a certificate of insurance, which is a one page summary of policy, or a copy of the original contract can be sent. WI created.')" id="check" value="">Certificates/Duplicate Policy<br>
+<br>
+<input type="checkbox" onclick="AddToWrapUp('Advised caller the estate of the deceased owner will be the owner of the policy. Advised the executor of the estate will need to complete a change of ownership form and submit a copy of the executor papers along with a copy of the death certificate. Advised can send form via fax, mail, or e-mail. Advised how to complete form.')" id="check" value="">Death of Owner<br>
+<br>
+<input type="checkbox" onclick="AddToWrapUp('Advised to complete Policy Information Form to change name. Advised can send form via fax, mail, or e-mail. Advised how to complete form. Advised to return along with proof of name change.')" id="check" value="">Name Change<br>	
+<br>
+<input type="checkbox" onclick="AddToWrapUp('Advised to complete Policy Information Form to change ownership. Advised can send form via fax, mail, or e-mail. Advised how to complete form.')" id="check" value="">Ownership Charge<br>	
+<br>
+<input type="checkbox" onclick="AddToWrapUp('Advised to send in a copy of POA document.')" id="check" value="">POA<br>	
+<br>
+<input type="checkbox" onclick="Addtext('VerificationDate', 'LocaleChange', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Advised verification request was received on ' + VariableArray.one + ' Advised verification request was processed and sent to ' + VariableArray.two + '.')" id="check" value="">Verification Request<br>	
+<span title="Date: MM/DD/YYYY">
+		Date: <input type="text" id="VerificationDate" name="VerificationDate" onchange="" value=""><br>
+	</span>
+	<span title="Name, Address, Fax">
+		To: <input type="text" id="LocaleChange" name="LocaleChange" onchange="" value=""><br>
+	</span>
+<br>
+
+<br>
+</DIV>
+</DIV>
+
+<!-- This is the content of the T2 DIV item. -->
+<DIV CLASS=conts ID=t2Contents>
+	<DIV style="font-size:8pt;height:620px;">
+	
+	<br>
+	
+	<input type="checkbox" onclick="Addtext('ExchangeDate', '2', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Caller wanted status of 1035 exchange request. Advised request was received on ' + VariableArray.one + '.')" id="check" value="">1035 Exchange <br>
+	<span title="Exchange Request Received Date">
+		Date: <input type="text" id="ExchangeDate" name="ExchangeDate" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="Addtext('AFVAmount', 'CSVAmount', 'CSCAmount', 'LoanBalance', 'DividendsTotal', 'FaceAmount', '7', '8', '9', '10'); AddToWrapUp('Caller wanted to verify policy values. Values quoted as of ' + new Date().toLocaleDateString() + '. Advised accumulated/fund value is $' + VariableArray.one + '. Advised cash surrender value is $' + VariableArray.two + '. Advised cash surrender charge is $' + VariableArray.three + ' (if applicable). Advised loan balance is $' + VariableArray.four + ' (if applicable).  Advised dividends total $' + VariableArray.five + ' (if applicable). Advised face amount is $' + VariableArray.six + '. Sent letter BLC0220 to address on file.')" id="check" value="">Cash Value Quote<br>
+	<span title="Accumulated Fund Value">
+		Accumulated: <input type="text" id="AFVAmount" name="AFVAmount" onchange="" value=""><br>
+	</span>
+	<span title="Cash Surrender Value">
+		Surrender Value: <input type="text" id="CSVAmount" name="CSVAmount" onchange="" value=""><br>
+	</span>
+	<span title="Cash Surrender Charge">
+		Surrender Charge: <input type="text" id="CSCAmount" name="CSCAmount" onchange="" value=""><br>
+	</span>
+	<span title="Loan Balance">
+		Loan Balance: <input type="text" id="LoanBalance" name="LoanBalance" onchange="" value=""><br>
+	</span>
+	<span title="Dividends Total">
+		Dividends: <input type="text" id="DividendsTotal" name="DividendsTotal" onchange="" value=""><br>
+	</span>
+	<span title="Face Amount">
+		Face Amount: <input type="text" id="FaceAmount" name="FaceAmount" onchange="" value=""><br>
+	</span><br>
+
+	<input type="checkbox" onclick="AddToWrapUp('Advised caller to send in a copy of formal documentation to show the correct date of birth. Advised this can include driver&#8217;s license, passport, or birth certificate.')" id="check" value="">DOB Change<br>	
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised caller that an illustration will be sent to give him/her an idea of how the policy will perform based on the change requested. WI created. Advised to complete policy change/conversion form to increase/decrease face amount. Advised can send form via fax, mail, or e-mail. Advised how to complete form.')" id="check" value="">Face Amount Increase/Decrease<br>	
+	
+	<input type="checkbox" onclick="Addtext('LoanProcessAmount', '2', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Quoted maximum loan available and interest rate. Advised it is not mandatory that loan be repaid, however loan amount will be deducted from face value or cash value at time of pay-out. Advised if the existing loan should become equal to or exceed the accumulated cash value, the policy could go into overloan, which may cause the policy to lapse. Advised the minimum loan payment is $15.00. Advised will escalate case for loan to be processed in the amount ' + VariableArray.one + '. Verified address.')" id="check" value="">Loan Initial Call<br>
+	<span title="Loan Process Amount">
+		Amount: <input type="text" id="LoanProcessAmount" name="LoanProcessAmount" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Quoted maximum available partial withdrawal. Advised withdrawal cannot be repaid. Advised partial withdrawal does not result in any indebtedness to the company, but the policy values will be lowered by the amount of the partial withdrawal. Advised to complete form or submit written request to take a partial withdrawal. Advised can send form via fax, mail, or e-mail. Advised how to complete form.')" id="check" value="">Partial Withdrawal Initial Call<br>	
+	
+	<input type="checkbox" onclick="Addtext('AFV2Amount', 'CSV2Amount', 'CSC2Amount', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Caller wanted to cancel. Offered to remove policy from PPSP. Advised a bill will be generated, but can disregard. Advised we require a surrender form or written request. Advised can send form via fax, mail, or e-mail. Advised how to complete form. Advised one of the most common reasons for surrender rejections is due to the policy owner failure to sign the form at the bottom of page 2, Section E. Advised community property states requirements (if applicable). Values quoted as of ' + new Date().toLocaleDateString() + '. Advised accumulated/fund value is $' + VariableArray.one + '. Advised cash surrender value is $' + VariableArray.two + '. Advised cash surrender charge is $' + VariableArray.three + ' (if applicable).')" id="check" value="">Surrender/Cancellation Initial Call<br>
+	<span title="Accumulated Fund Value">
+		Accumulated Value: <input type="text" id="AFV2Amount" name="AFV2Amount" onchange="" value=""><br>
+	</span>
+	<span title="Cash Surrender Value">
+		Surrender Value: <input type="text" id="CSV2Amount" name="CSV2Amount" onchange="" value=""><br>
+	</span>
+	<span title="Cash Surrender Charge">
+		Surrender Charge: <input type="text" id="CSC2Amount" name="CSC2Amount" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="Addtext('RRDate', '2', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Advised caller request was made/received on ' + VariableArray.one + '. Advised request is being processed. Advised to allow more time for processing to be completed.')" id="check" value="">Loan/Partial Withdrawal/Surrender Status<br>
+	<span title="Request Received Date">
+		Date: <input type="text" id="RRDate" name="RRDate" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="Addtext('LPWSChoice', 'RADate', 'LPWSAmount', 'LPWSMailDate', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Advised caller that ' + VariableArray.one + ' was approved on ' + VariableArray.two + ' in the amount of ' + VariableArray.three + '. Advised check was mailed on ' + VariableArray.four + '. Verified address.')" id="check" value="">Loan/Partial Withdrawal/Surrender Approved<br>
+	<span title="Loan/Partial Withdrawal/Surrender">
+		Type: <input type="text" id="LPWSChoice" name="LPWSChoice" onchange="" value=""><br>
+	</span>
+	<span title="Request Approval Date">
+		Date: <input type="text" id="RADate" name="RADate" onchange="" value=""><br>
+	</span>
+	<span title="Loan/Partial Withdrawal/Surrender Amount">
+		Amount: <input type="text" id="LPWSAmount" name="LPWSAmount" onchange="" value=""><br>
+	</span>
+	<span title="Check Mailed Date">
+		Date: <input type="text" id="LPWSMailDate" name="LPWSMailDate" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised will need to complete an application for reinstatement to reinstate policy. Advised can send form via fax, mail, or e-mail. Advised how to complete form. Advised reinstatement is subject to underwriting and is not guaranteed. Advised we will send correspondence to advise if reinstatement is approved or denied and amount to remit if applicable.')" id="check" value="">Reinstatement	<br>
+	
+	
+	</DIV>
+</DIV>
+
+<!-- This is the content of the T3 DIV item. -->
+<DIV CLASS=conts ID=t3Contents>
+<DIV style="height:620px;">
+<br><br>
+
+	<input type="checkbox" onclick="Addtext('MonthlyAmount', 'CurrentDraft', 'LastDraft', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Advised policy is on PPSP. Advised PTD. Advised monthly premium amount is $' + VariableArray.one + '. Advised draft date is ' + VariableArray.two + '. Advised last draft date was ' + VariableArray.three + '.')" id="check" value="">Billing Status (PPSP)<br>
+	<span title="Monthly Premium Amount">
+		Monthly Amount: <input type="text" id="MonthlyAmount" name="MonthlyAmount" onchange="" value=""><br>
+	</span>
+	<span title="Current Draft Date">
+		Current Draft: <input type="text" id="CurrentDraft" name="CurrentDraft" onchange="" value=""><br>
+	</span>
+	<span title="Last Draft Date">
+		Last Draft: <input type="text" id="LastDraft" name="LastDraft" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="Addtext('BillMode', 'BillAmount', 'LastPayment', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Advised policy is on direct bill. Advised PTD. Advised billing mode is ' + VariableArray.one + ' and amount is $' + VariableArray.two + '. Advised last payment received on ' + VariableArray.three + '.')" id="check" value="">Billing Status (Direct)<br>
+	<span title="Billing Mode: Monthly, Quarterly, Semi-Annual, Annual">
+		Billing Mode: <input type="text" id="BillMode" name="BillMode" onchange="" value=""><br>
+	</span>
+	<span title="Billing Amount">
+		Billed Amount: <input type="text" id="BillAmount" name="BillAmount" onchange="" value=""><br>
+	</span>
+	<span title="Last Payment Receipt Date">
+		Last Payment: <input type="text" id="LastPayment" name="LastPayment" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Removed policy from PPSP or WI created to remove policy from PPSP. Advised caller of difference in premium amount. Advised policy defaults to a quarterly billing mode. Informed caller of grace period. Advised caller to watch their account as we need at least 10 business days to ensure draft does not go through. Advised a bill will be generated.')" id="check" value="">PPSP Removal<br>
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Informed caller of process of updating PPSP. Adv will need to complete PPSP form to make PPSP changes. Advised can send form via fax, mail, or e-mail. Advised how to complete form. Advised to select a day between the 1st and the 28th of the month. Advised voided check is not mandatory.')" id="check" value="">PPSP Set Up<br>
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Verified banking information. WI created. Advised caller to ensure money is in account as force draft may go through as soon as draft is set up. Gave PTD and amount required to pay policy current.')" id="check" value="">PPSP Restart<br>
+	<br>
+	
+	<input type="checkbox" onclick="Addtext('DateAmount', '2', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Advised request will be made to change the ' + VariableArray.one + '. Informed caller we require a minimum of 10 business days prior to their next draft to ensure it is completed timely.')" id="check" value="">PPSP Changes<br>
+	<span title="Draft Date and Amount">
+		Date and Amount: <input type="text" id="DateAmount" name="DateAmount" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Verified address on file. Gave last bill date. WI created for new bill to be sent. Gave PTD. Informed caller of grace period.  Informed caller payment can be made without bill.')" id="check" value="">Rebill<br>
+	<br>
+	
+	<input type="checkbox" onclick="Addtext('RNSFDate', '2', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Informed caller payment was not honoured. Request was sent to the bank/check was received on ' + VariableArray.one + '. Gave PTD. Informed caller of grace period.')" id="check" value="">Returned Checks/NSF<br>
+	<span title="Returned Check/NSF Received Date">
+		Date: <input type="text" id="RNSFDate" name="RNSFDate" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised if caller thinks there was a double draft on their account, to send a copy of bank statement for us to review. Advised we will review and send correspondence. Advised refund is not guaranteed; it is based on outcome of research. Advised if approved, refund check will be sent.')" id="check" value="">Account Overdrawn<br>
+	<br>
+
+<!-- This button sends us to the Pay by Phone options -->
+<a target="_blank" href="http://extteamsites.conseco.com/sites/LearningLink2/Published%20ELearning%20Modules/OPP%20Resources/Online%20Premium%20Payment%20Decision%20Tree%20-%20Storyline%20output/story.html">Online Premium Payments Eligibility</a>
+
+
+	
+	</DIV>	
+</DIV>
+
+<!-- This is the content of the T4 DIV item. -->
+<DIV CLASS=conts ID=t4Contents>
+<DIV style="height:620px;">
+<br><br>
+
+	<input type="checkbox" onclick="Addtext('DOD1', 'COD1', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('DOD ' + VariableArray.one + '. COD ' + VariableArray.two + '. Gave policy status. Verified beneficiary and face amount and provided disclaimer. Advised can send form via fax, mail, or e-mail. Advised a copy will be sent to the address on file.  Advised how to complete form. Advised of claim requirements, CDC or copy, claim form, original policy or (sign section on CF), assignment if proceeds are to be assigned. Advised contestable/non contestable.')" id="check" value="">Reporting Insured&#8217;s Death<br>
+	<span title="Date of Death">
+		DOD: <input type="text" id="DOD1" name="DOD1" onchange="" value=""><br>
+	</span>
+	<span title="Cause of Death (Natural, Accidental, etc.)">
+		COD: <input type="text" id="COD1" name="COD1" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="Addtext('DateOfDeath2', 'ClmRecvd', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('DOD ' + VariableArray.one + '. Advised caller claim paperwork received on ' + VariableArray.two + ' and is being processed. Advised to allow more time for processing to be completed.')" id="check" value="">Death Claim Status (Non Contestable)<br>
+	<span title="Date of Death">
+		DOD: <input type="text" id="DateOfDeath2" name="DateOfDeath2" onchange="" value=""><br>
+	</span>
+	<span title="Claim Paperwork Received">
+		Received Date: <input type="text" id="ClmRecvd" name="ClmRecvd" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="Addtext('DOD2', 'DFName', 'RqstMail', 'BeneLetter', '5', '6', '7', '8', '9', '10'); AddToWrapUp('DOD ' + VariableArray.one + '. Advised claim is contestable since the insured died within the first two years of the policy. Advised cannot guarantee TAT, however we will keep you informed of our progress throughout the review. Advised we are awaiting medical records from ' + VariableArray.two + '. Advised request was sent on ' + VariableArray.three + '. Advised follow up letter was sent to beneficiary on ' + VariableArray.four + '.')" id="check" value="">Death Claim Status (Contestable)<br>
+	<span title="Date of Death">
+		DOD: <input type="text" id="DOD2" name="DOD2" onchange="" value=""><br>
+	</span>
+	<span title="Doctor or Facility Name">
+		Name: <input type="text" id="DFName" name="DFName" onchange="" value=""><br>
+	</span>
+	<span title="Request Mailed Date">
+		Mail Date: <input type="text" id="RqstMail" name="RqstMail" onchange="" value=""><br>
+	</span>
+	<span title="Follow up Letter to Beneficiary Date">
+		Mail Date: <input type="text" id="BeneLetter" name="BeneLetter" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="Addtext('ApprvDate', 'SentToWho', 'DthCheckAmt', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Caller wanted claim status. Advised claim was approved on ' + VariableArray.one + ' and check sent to ' + VariableArray.two + ' in the amount of ' + VariableArray.three + '. Gave phone number for BSO/BNA (if applicable).')" id="check" value="">Death Claim Approved<br>
+	<span title="Approval Date">
+		Approval Date: <input type="text" id="ApprvDate" name="ApprvDate" onchange="" value=""><br>
+	</span>
+	<span title="Sent to BNA, BSO, Payee, etc.">
+		Sent To: <input type="text" id="SentToWho" name="SentToWho" onchange="" value=""><br>
+	</span>
+	<span title="Death Claim Check Amount">
+		Check Amount: <input type="text" id="DthCheckAmt" name="DthCheckAmt" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised proceeds were deposited into a BNA. Advised the BenefitNOW Account is an interest-bearing draft account and is our primary method of paying insurance proceeds over $5,000. Advised there are no penalties for withdrawing any or all of your funds at any time.  Advised you will receive detailed monthly statements to help you track your balance, activity and credited interest. Advised after the account is set up, the beneficiary can call 1-800-331-4631 code 190 for further information.')" id="check" value="">Benefit Now Account<br>
+	<br>
+</DIV>
+</DIV>
+
+<!-- This is the content of the T5 DIV item. -->
+<DIV CLASS=conts ID=t5Contents>
+<DIV style="height:620px;">
+	<br><br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised PH&#8217;s authorization needed to release information. Offered conference call with PH. Offered to send requested information to the address on file. Offered CIR form for future calls.  Advised CIR is valid for 24 months, gives access to information, but not to make changes.')" id="check" value="">Unauthorized Caller<br>
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised can send form via fax, mail, or e-mail. (If e-mailed) Advised to check junk mail.  Advised how to complete form.')" id="check" value="">Form Request<br>
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised proceeds were transferred to Abandoned Property. Gave Abandoned Property phone number. Advised this is an automated line and calls are returned in 24 hours. Transferred for additional assistance. Gave e-mail address.')" id="check" value="">Abandoned Property<br>
+	<br>
+	
+	<input type="checkbox" onclick="Addtext('DocsReceived', '2', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Advised documents were received on ' + VariableArray.one + '. Advised to allow more time for processing to be completed.')" id="check" value="">Documents Received<br>	
+	<span title="Date: MM/DD/YYYY">
+		Date: <input type="text" id="DocsReceived" name="DocsReceived" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised to send concerns in writing to Conseco Services, LLC Attn:  Agent Market Conduct, K2L 11825 North Pennsylvania Street Carmel IN 46239. Gave fax number 317-812-2826 Attn:  Agent Market Conduct, K2L.')" id="check" value="">Agent Complaints<br>	
+	<br>
+	
+	<input type="checkbox" onclick="Addtext('LineOfBusiness', 'Extension', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Caller needed assistance with ' + VariableArray.one + ' policy. Transferred to extension ' + VariableArray.two + ' for additional assistance.')" id="check" value="">Transfers<br>	
+	<span title="LOB">
+		LOB: <input type="text" id="LineOfBusiness" name="LineOfBusiness" onchange="" value=""><br>
+	</span>
+	<span title="Extension: x99999">
+		Extension: <input type="text" id="Extension" name="Extension" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised caller to send a copy of the policy or current correspondence from our company for additional research.')" id="check" value="">Unlocateable Policies<br>	
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised will have privacy choice updated. WI created. Advised why privacy letter was received and explained to caller.')" id="check" value="">Privacy Option<br>	
+	<br>
+	
+</DIV>
+</DIV>
+
+<!-- This is the content of the T6 DIV item. -->
+<DIV CLASS=conts ID=t6Contents>
+<DIV style="height:620px;">
+	<input type="checkbox" onclick="AddToWrapUp('Advised surrender is only taxable if the cash surrender value is more than the premiums paid into the policy. Advised the gain portion would be taxable and a 1099 R would be sent. Advised to consult an advisor for additional advice.')" id="check" value="">Surrender<br>
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised if dividends are withdrawn, the interest portion is taxable and a 1099 R would be generated. Advised if left on the policy, dividends would not be taxable and a 1099 INT would be generated to report interest gained. Advised to consult an advisor for additional advice.')" id="check" value="">Dividends<br>
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Informed caller that a death claim is only taxable if there is interest in excess of $600.00. ')" id="check" value="">Death Claim<br>
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised if there is an overall gain on the cash surrender value, then the partial withdrawal may be taxable. Advised if so, a 1099 R will be generated and sent. ')" id="check" value="">Partial Withdrawal<br>
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised a loan is not taxable, however if the policy goes into overloan, the interest portion would be taxable. Advised a 1099 R will be generated and sent if that occurs.')" id="check" value="">Loan<br>
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Verified address. Advised can send 1099 via fax, mail, or e-mail.')" id="check" value="">Duplicate 1099 Request<br>
+	<br>
+</DIV>
+</DIV>
+
+<!-- This is the content of the T7 DIV item. -->
+<DIV CLASS=conts ID=t7Contents>
+<DIV style="height:620px;">
+
+	<br><br>
+	
+	<input type="checkbox" onclick="Addtext('AddressGeneral', '2', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Mailed form to ' + VariableArray.one + '.')" id="check" value="">Mailed Form<br>
+	<span title="Address">
+		Address: <input type="text" id="AddressGeneral" name="AddressGeneral" onchange="" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="Addtext('FaxGeneral', '2', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Faxed form to ' + VariableArray.one + '.')" id="check" value="">Faxed Form<br>
+	<span title="Address">
+		Fax: <input type="text" id="FaxGeneral" name="FaxGeneral" onchange="Addtext('FaxGeneral';" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="Addtext('EmailGeneral', '2', '3', '4', '5', '6', '7', '8', '9', '10'); AddToWrapUp('Emailed form to ' + VariableArray.one + '.')" id="check" value="">Emailed Form<br>
+	<span title="Address">
+		Email: <input type="text" id="EmailGeneral" name="EmailGeneral" onchange="Addtext('EmailGeneral');" value=""><br>
+	</span><br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised the caller of our mailing address.')" id="check" value="">Mailing Address<br>	
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised the caller of our fax number.')" id="check" value="">Fax Number<br>	
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised the caller of our e-mail address.')" id="check" value="">E-mail Address<br>	
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised the caller of our phone number.')" id="check" value="">Phone Number<br>	
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised the caller of SLA and mail TAT.')" id="check" value="">SLA<br>	
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised a confirmation letter will be sent once processed.')" id="check" value="">Confirmation Letter<br>	
+	<br>
+	
+	<input type="checkbox" onclick="AddToWrapUp('Advised a check will be sent once processed.')" id="check" value="">Check<br>	
+	<br>
+	
+</DIV>
+</DIV>
+</form>
+</body>
+
+<script language="JavaScript" type="text/javascript" src="http://cnonet.conseco.ad/CIGWashington/cig_phs/Customer%20Service%20System%20Documents/LifeJS.js"></script>
+</html>
+
+<!-- This website has been put together by Matt Paul and Nichole Sherrill. If you have any questions, feel free to contact them. -->

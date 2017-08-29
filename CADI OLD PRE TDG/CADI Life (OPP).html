@@ -1,0 +1,629 @@
+<!DOCTYPE html PUBLIC>
+<html lang="en">
+
+<head>
+
+<meta http-equiv="x-ua-compatible" content="IE=Edge"/> 
+
+<title>
+	Caller Authentication and Documentation Interface - Life
+</title>
+			
+<script language="JavaScript" type="text/javascript">
+
+
+/*
+Created by Matthew Paul. For questions, please contact me at Matthew.Paul@CNOInc.com. Thank you.
+*/
+
+// Here, I declare a global array which I will use to pass the secondary authorization variables.
+var SecondAuth = {};
+SecondAuth.type = "";
+SecondAuth.surrender = "";
+SecondAuth.sla = "";
+SecondAuth.ID = "";
+
+var CADIGlobal = {};
+CADIGlobal.CADI = "";
+CADIGlobal.Verified = "Verified";
+
+var VariableArray = {
+		one:"",
+		two:"",
+		three:"",
+		four:"",
+		five:"",
+		six:"",
+		seven:"",
+		eight:"",
+		nine:"",
+		ten:"",
+	};
+	
+var PremiumAttempt = {};
+PremiumAttempt.Attempt = "";
+
+var noEscape = {};
+			
+function VerifyAllInfo() {
+
+		// Lets declare our variables!
+		var AP1 = "Correspondence Confirmation [Incoming]";
+		var AP2 = "No disclosure";
+		var AP3 = "ALL";
+		var AP4 = "Policy Status [Active or Inactive Only]";
+		var AP5 = "[Caller not verified]";
+		var AP6 = "Correspondence Confirmation [Outgoing]";
+		var AP7 = "Confirmation of Insured";
+		var AP8 = "Name of Owner";
+		var AP9 = "Face Amount";
+		var AP10 = "PPSP Draft Information Only";
+		var AP11 = "Refer to POA Paperwork on File [Valid Until Owner's Death]";
+		var AP12 = "Refer to CIR/ARI on File";
+		var AP13 = "Verify DOD and check for Claim Assignment";
+		var AP14 = "Beneficiary Confirmation";
+		var AP15 = "Status of the Contestability Period";
+		var AP16 = "Paid to Date";
+		var AP17 = "Cost of Insurance";
+		var AP18 = "Cash Value";
+		var AP19 = "Indebtness to Company";
+		var AP20 = "Interest Rates";
+		var AP21 = "Refer to Legal Auth on File";
+		var AP22 = "Information related to the assignment";
+		var AP23 = "Information related to calculating the claim";
+		var AP24 = "Confirmation of Assignment";
+		var AP25 = "Executorship not valid until after owner's death";
+		var AP26 = "Information releated to the claim dollar amount of the collateral assignment";
+		var AP27 = "Identity of Beneficiaries";
+		var AP28 = "Information pertaining to specific claim";
+		var AP29 = "Confirmation of Insured";
+		var AP30 = "Beneficiary Confirmation";
+		
+		// Now, the policy number.
+			var PolNum = document.forms["Validate"]["PolicyNumberText"].value;
+		// The callers name.
+			var CallName = document.forms["Validate"]["CallersNameText"].value;
+		// The relationship.
+			var Relation = document.forms["Validate"]["RelationshipListbox"].value;
+		// The Insureds DOB Checkbox
+			var VerbalAuth = document.forms["Validate"]["VerbalAuth"].checked;
+			
+		// The Secondary Auth Type
+		SecondAuth.Type = "N/A";
+		SecondAuth.ID = "";
+		
+				/* This is the secondary authorization logic. We use this to determine which type of authorization we are provided, find the length of the DocIDs, and save information to our SecondAuth array. */
+				
+				if (document.getElementById('VerbalAuth').checked) {
+					Radio = document.getElementById('VerbalAuth').value;
+					DocID = "9";
+					SecondAuth.ID = "";
+					SecondAuth.Type = "Verbal Auth";
+				}
+				else if (document.getElementById('CIRARI').checked) {
+					Radio = document.getElementById('CIRARI').value;
+					DocID = document.forms["Validate"]["CIRDoc"].value;
+					SecondAuth.ID = document.forms["Validate"]["CIRDoc"].value;
+					DocID = DocID.length;
+					SecondAuth.Type = "CIR/ARI";
+				}
+				else if (document.getElementById('LegalAuth').checked) {
+					Radio = document.getElementById('LegalAuth').value;
+					DocID = document.forms["Validate"]["LegalAuthDoc"].value;
+					SecondAuth.ID = document.forms["Validate"]["LegalAuthDoc"].value;
+					DocID = DocID.length;
+					SecondAuth.Type = "Legal Auth";
+				}
+				else if (document.getElementById('Assignment').checked) {
+					Radio = document.getElementById('Assignment').value;
+					DocID = document.forms["Validate"]["AssignmentDoc"].value;
+					SecondAuth.ID = document.forms["Validate"]["AssignmentDoc"].value;
+					DocID = DocID.length;
+					SecondAuth.Type = "Assignment";
+				}
+				else if (document.getElementById('ClaimAssignment').checked) {
+					Radio = document.getElementById('ClaimAssignment').value;
+					DocID = document.forms["Validate"]["ClaimAssDoc"].value;
+					SecondAuth.ID = document.forms["Validate"]["ClaimAssDoc"].value;
+					DocID = DocID.length;
+					SecondAuth.Type = "Claim Assignment";
+				}
+				else {
+				}
+				
+		// The CTIPop Checkbox
+			var CTIPop = document.forms["Validate"]["CTIBox"].checked;
+				
+				/* The next few sections are going to be validating the interactions with our textbox/checkbox combos. If SSN, Owner's DOD, or Insured's DOD are left empty, then we will also uncheck the corresponding check box. */
+				
+		// The SSN
+			var SSN = document.forms["Validate"]["SSNText"].value;
+				SSN = SSN.length;
+				 if (SSN > 3) {
+					document.getElementById("chkSSN").checked = true;
+				}
+				else if (SSN < 4) {
+					document.getElementById("chkSSN").checked = "";
+				}
+				else{
+				}
+			
+		// The Owner's DOD
+			var OwDOD = document.forms["Validate"]["OwnerDODText"].value;
+				OwDOD = OwDOD.length;
+				 if (OwDOD > 0) {
+					document.getElementById("chkOwDOD").checked = true;
+				}
+				else if (OwDOD < 1) {
+					document.getElementById("chkOwDOD").checked = "";
+				}
+				else{
+				}			
+			
+				
+		// The Insureds DOD
+			var InsDOD = document.forms["Validate"]["InsuredDODText"].value;
+				InsDOD = InsDOD.length;
+				 if (InsDOD > 0) {
+					document.getElementById("chkInsDOD").checked = true;
+				}
+				else if (InsDOD < 1) {
+					document.getElementById("chkInsDOD").checked = "";
+				}
+				else{
+				}				
+				
+				
+			/* Here we loop through the check boxes used for validation, counting them as we go. At the end of this object, we make it a usable integer for the verification logic later. */
+			var VerifyCount = "";
+			var count = "";
+				for(x=0; x<document.forms["Validate"]["Checkbox"].length; x++){
+					if(document.forms["Validate"]["Checkbox"][x].checked==true){
+					
+					count += document.forms["Validate"]["Checkbox"][x].value;
+					VerifyCount = parseInt(count.length);
+					
+					}
+				}
+			
+			/* This is the logic for the verification. Basically, we always assume that we need to have a policy number and caller name. I put the "VerbalAuth" secondary authorization first so that it will override everything else. Then, I just run through each relationship/secondary auth combo which makes sense. Each time, we update the innerHTML objects with the pre-declared variables for which items are allowed to be discussed. */
+			
+		if (PolNum != "" && CallName != "" && (document.getElementById('VerbalAuth').checked) && (VerifyCount > 3 || CTIPop == true) && (document.getElementById('chkOwDOD').checked != true)) {
+				document.getElementById("NonFi").innerHTML = AP3;
+				document.getElementById("Prem").innerHTML = AP3;
+				document.getElementById("Finance").innerHTML = AP3;
+				document.getElementById("Claim").innerHTML = AP3;
+				CADIGlobal.Verified = "Verified" ;
+		}		
+		else if (PolNum != "" && CallName != "" && Relation == "Owner" && (VerifyCount > 3 || CTIPop == true)) {
+				document.getElementById("NonFi").innerHTML = AP3;
+				document.getElementById("Prem").innerHTML = AP3;
+				document.getElementById("Finance").innerHTML = AP3;
+				document.getElementById("Claim").innerHTML = AP3;
+				CADIGlobal.Verified = "Verified" ;
+		}		
+		else if (PolNum != "" && CallName != "" && Relation == "Insured" && (VerifyCount > 3 || CTIPop == true)) {
+				document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1 + ", " + AP6 + ", " + AP7 + ", " + AP8;
+				document.getElementById("Prem").innerHTML = AP2;
+				document.getElementById("Finance").innerHTML = AP9;
+				document.getElementById("Claim").innerHTML = AP2;
+				CADIGlobal.Verified = "Verified" ;
+		}
+		else if (PolNum != "" && CallName != "" && Relation == "Payor" && (VerifyCount > 3 || CTIPop == true)) {
+				document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1 + ", " + AP6;
+				document.getElementById("Prem").innerHTML = "(Official Payor) " + AP3 + "<br>(Unofficial Payor) " + AP10;
+				document.getElementById("Finance").innerHTML = AP2;
+				document.getElementById("Claim").innerHTML = AP2;
+				CADIGlobal.Verified = "Verified" ;
+		}
+		else if (PolNum != "" && CallName != "" && Relation == "POA" && (VerifyCount > 3 || CTIPop == true) && (document.getElementById('LegalAuth').checked != true)) {
+				document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1;
+				document.getElementById("Prem").innerHTML = AP2;
+				document.getElementById("Finance").innerHTML = AP2;
+				document.getElementById("Claim").innerHTML = AP2;
+				CADIGlobal.Verified = "Verified" ;
+		}
+		else if (PolNum != "" && CallName != "" && Relation == "POA" && (VerifyCount > 3 || CTIPop == true) && (document.getElementById('LegalAuth').checked && DocID > 0)) {
+				document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1 + ", " + AP11;
+				document.getElementById("Prem").innerHTML = AP2 + ", " + AP11;
+				document.getElementById("Finance").innerHTML = AP2 + ", " + AP11;
+				document.getElementById("Claim").innerHTML = AP2 + ", " + AP11;
+				CADIGlobal.Verified = "Verified" ;
+		}
+		else if (PolNum != "" && CallName != "" && Relation == "Beneficiary" && (VerifyCount > 3 || CTIPop == true) && (document.getElementById('chkInsDOD').checked != true)) {
+				document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1 + ", " + AP6;
+				document.getElementById("Prem").innerHTML = AP2;
+				document.getElementById("Finance").innerHTML = AP2;
+				document.getElementById("Claim").innerHTML = AP2;
+				CADIGlobal.Verified = "Verified" ;
+		}
+		else if (PolNum != "" && CallName != "" && Relation == "Beneficiary" && (VerifyCount > 3 || CTIPop == true) && document.getElementById('chkInsDOD').checked) {
+				document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1 + ", " + AP30 + ", " + AP6 + ", " + AP27 + ", " + AP29;
+				document.getElementById("Prem").innerHTML = AP28;
+				document.getElementById("Finance").innerHTML = AP28;
+				document.getElementById("Claim").innerHTML = AP28;
+				CADIGlobal.Verified = "Verified" ;
+		}
+		else if (PolNum != "" && CallName != "" && Relation == "Executor" && (VerifyCount > 3 || CTIPop == true) && (document.getElementById('LegalAuth').checked && DocID > 0) && (document.getElementById('chkOwDOD').checked != true)) {
+				document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1 + ", " + AP14 + ", " + AP25;
+				document.getElementById("Prem").innerHTML = AP2 + ", " + AP25;
+				document.getElementById("Finance").innerHTML = AP2 + ", " + AP25;
+				document.getElementById("Claim").innerHTML = AP2 + ", " + AP25;
+				CADIGlobal.Verified = "Verified" ;
+		}
+		else if (PolNum != "" && CallName != "" && Relation == "Executor" && (VerifyCount > 3 || CTIPop == true) && (document.getElementById('LegalAuth').checked && DocID > 0) && (document.getElementById('chkOwDOD').checked)) {
+				document.getElementById("NonFi").innerHTML = AP3;
+				document.getElementById("Prem").innerHTML = AP3;
+				document.getElementById("Finance").innerHTML = AP3;
+				document.getElementById("Claim").innerHTML = AP3;
+				CADIGlobal.Verified = "Verified" ;
+		}
+		else if (PolNum != "" && CallName != "" && Relation == "Funeral Home" && (VerifyCount > 3 || CTIPop == true) && (document.getElementById('chkInsDOD').checked != true) && (document.getElementById('ClaimAssignment').checked != true)) {
+				document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1 + ", " + AP13;
+				document.getElementById("Prem").innerHTML = AP2 + ", " + AP13;
+				document.getElementById("Finance").innerHTML = AP2 + ", " + AP13;
+				document.getElementById("Claim").innerHTML = AP2 + ", " + AP13;
+				CADIGlobal.Verified = "Verified" ;
+		}
+		else if (PolNum != "" && CallName != "" && Relation == "Funeral Home" && (VerifyCount > 3 || CTIPop == true) && (document.getElementById('chkInsDOD').checked) && (document.getElementById('ClaimAssignment').checked != true)) {
+				document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1 + ", " + AP14 + ", " + AP6 + ", " + AP15;
+				document.getElementById("Prem").innerHTML = AP2;
+				document.getElementById("Finance").innerHTML = AP9;
+				document.getElementById("Claim").innerHTML = AP2;
+				CADIGlobal.Verified = "Verified" ;
+		}
+		else if (PolNum != "" && CallName != "" && Relation == "Funeral Home" && (VerifyCount > 3 || CTIPop == true) && (document.getElementById('chkInsDOD').checked) && (document.getElementById('ClaimAssignment').checked && DocID > 0)) {
+				document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1 + ", " + AP14 + ", " + AP6 + ", " + AP15 + ", " + AP22;
+				document.getElementById("Prem").innerHTML = AP22;
+				document.getElementById("Finance").innerHTML = AP23 + ", " + AP24 + ", " + AP9;
+				document.getElementById("Claim").innerHTML = AP22;
+				CADIGlobal.Verified = "Verified" ;
+		}
+		else if (PolNum != "" && CallName != "" && Relation == "Other") {
+			/* This part gets a bit tricky. I recognize that there are a lot of ways the "Other" relationship can be verified, so I took the commonalities, and left them out (PolNum, CallName, and Relation). After I did that, I just checked for the things which make a difference and updated the innerHTML object accordingly. */
+				if (document.getElementById('CIRARI').checked && DocID > 0){
+					document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1;
+					document.getElementById("Prem").innerHTML = AP2;
+					document.getElementById("Finance").innerHTML = AP2;
+					document.getElementById("Claim").innerHTML = AP2;
+					CADIGlobal.Verified = "Verified" ;
+				}
+				else if (document.getElementById('LegalAuth').checked && DocID > 0){
+					document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1 + ", " + AP21;
+					document.getElementById("Prem").innerHTML = AP2 + ", " + AP21;
+					document.getElementById("Finance").innerHTML = AP2 + ", " + AP21;
+					document.getElementById("Claim").innerHTML = AP2 + ", " + AP21;
+					CADIGlobal.Verified = "Verified" ;
+				}
+				else if (document.getElementById('Assignment').checked && DocID > 0 && document.getElementById('chkOwDOD').checked){
+					document.getElementById("NonFi").innerHTML = "(Collateral Assignment): " + AP4 + ", " + AP1 + ", " + AP6;
+					document.getElementById("Prem").innerHTML = "(Collateral Assignment): " + ", " + AP16 + ", " + AP17 + "<br> Premium (Absolute Assignment): " + AP3;
+					document.getElementById("Finance").innerHTML = "(Collateral Assignment): " + ", " + AP18 + ", " + AP19 + ", " + AP20 + "<br> Premium (Absolute Assignment): " + AP3;
+					document.getElementById("Claim").innerHTML = "(Collateral Assignment): " + ", " + AP2 + "<br> Premium (Absolute Assignment): " + AP + ", " + AP26;
+					CADIGlobal.Verified = "Verified" ;
+				}
+				else if (document.getElementById('Assignment').checked && DocID > 0 && document.getElementById('chkOwDOD').checked != true){
+					document.getElementById("NonFi").innerHTML = "(Collateral Assignment): " + AP4 + ", " + AP1 + ", " + AP6;
+					document.getElementById("Prem").innerHTML = "(Collateral Assignment): " + ", " + AP16 + ", " + AP17 + "<br> Premium (Absolute Assignment): " + AP3;
+					document.getElementById("Finance").innerHTML = "(Collateral Assignment): " + ", " + AP18 + ", " + AP19 + ", " + AP20 + "<br> Premium (Absolute Assignment): " + AP3;
+					document.getElementById("Claim").innerHTML = "(Collateral Assignment): " + ", " + AP2 + "<br> Premium (Absolute Assignment): " + AP3;
+					CADIGlobal.Verified = "Verified" ;
+				}
+				else if ((VerifyCount > 3 || CTIPop == true) && document.getElementById('chkInsDOD').checked){
+					document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1 + ", " + AP30;
+					document.getElementById("Prem").innerHTML = AP2;
+					document.getElementById("Finance").innerHTML = AP2;
+					document.getElementById("Claim").innerHTML = AP2;
+					CADIGlobal.Verified = "Verified" ;
+					
+				}
+				else if ((VerifyCount > 3 || CTIPop == true)){
+					document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1;
+					document.getElementById("Prem").innerHTML = AP2;
+					document.getElementById("Finance").innerHTML = AP2;
+					document.getElementById("Claim").innerHTML = AP2;
+					CADIGlobal.Verified = "Verified" ;
+				}
+				else {
+					document.getElementById("NonFi").innerHTML = AP1 + " , " + AP2;
+					document.getElementById("Prem").innerHTML = AP2;
+					document.getElementById("Finance").innerHTML = AP2;
+					document.getElementById("Claim").innerHTML = AP2;
+					CADIGlobal.Verified = "Not Verified" ;
+				}	
+		}
+		else if ((VerifyCount > 3 || CTIPop == true)){
+				document.getElementById("NonFi").innerHTML = AP4 + ", " + AP1;
+				document.getElementById("Prem").innerHTML = AP2;
+				document.getElementById("Finance").innerHTML = AP2;
+				document.getElementById("Claim").innerHTML = AP2;
+				CADIGlobal.Verified = "Not Verified" ;
+		}
+		else {
+				document.getElementById("NonFi").innerHTML = AP1 + " , " + AP2;
+				document.getElementById("Prem").innerHTML = AP2;
+				document.getElementById("Finance").innerHTML = AP2;
+				document.getElementById("Claim").innerHTML = AP2;
+				CADIGlobal.Verified = "Not Verified" ;
+		}		
+		
+		/* The only thing not handled above was the CIR/ARI on file. This is where we handle it. */
+		
+		if (document.getElementById('CIRARI').checked && DocID > 0) {
+				document.getElementById("NonFi").innerHTML = document.getElementById("NonFi").innerHTML + ", " + AP12;
+				document.getElementById("Prem").innerHTML = document.getElementById("Prem").innerHTML + ", " + AP12;
+				document.getElementById("Finance").innerHTML = document.getElementById("Finance").innerHTML + ", " + AP12;
+				document.getElementById("Claim").innerHTML = document.getElementById("Claim").innerHTML + ", " + AP12;
+				CADIGlobal.Verified = "Verified" ;
+		}	
+		else {
+		}
+		
+		
+	}
+	
+		function AddToCADI(){
+				
+		/* This is where we handle the copy functionality. We first declare some variables. Second, we put together all the relevant header information. Third, we add all of this to the clipboard. */
+
+		// Now, the policy number.
+			var PolNum = document.forms["Validate"]["PolicyNumberText"].value;
+		// The callers name.
+			var CallName = document.forms["Validate"]["CallersNameText"].value;
+		// The relationship.
+			var Relation = document.forms["Validate"]["RelationshipListbox"].value;
+		// Owner DOD boxes
+			var DODOwner = "";
+			var DODOwnerCheck = document.forms["Validate"]["OwnerDODBox"].checked;
+				if (DODOwnerCheck == true) {
+					DODOwner = "Owner DOD: " + document.forms["Validate"]["OwnerDODText"].value + " || ";
+				}			
+		// Insured DOD boxes
+			var DODInsured = "";
+			var DODInsuredCheck = document.forms["Validate"]["InsuredDODBox"].checked;
+				if (DODInsuredCheck == true) {
+					DODInsured = "Insured DOD: " + document.forms["Validate"]["InsuredDODText"].value + " || ";
+				}
+		// The CTI Qualified Checkbox
+			var CTI = ""
+		// The CTI Qualified Checkbox
+			var CTICheck = document.forms["Validate"]["CTIBox"].checked;
+				if (CTICheck == true) {
+					CTI = "Received a call which was externally qualified. ";
+				}		
+		
+		// This is where we concatenate all relevant header information.
+		CADIGlobal.CADI = "Policy Number: " + PolNum + " || Caller Name: " + CallName + " || " + "(" + Relation + ") || " + CADIGlobal.Verified + " || Secondary Authorization: " + SecondAuth.Type + " " + SecondAuth.ID + " || " + DODOwner + DODInsured + CTI + " || " + PremiumAttempt.Attempt ;
+		
+		// Here, we add to the clipboard. 
+		window.clipboardData.setData('text', CADIGlobal.CADI + document.getElementById('CADIText').innerText );
+		
+		}
+		
+			// Here, we add the checked box to the wrap up.
+		function AddToWrapUp(name){
+			CADI = document.forms["Validate"]["CADIText"].value;
+			document.getElementById("CADIText").innerHTML = CADI + name + " // ";
+		}
+			// SLA listbox in the checkboxes
+		function ServiceLevelAgreement(){
+			SecondAuth.sla = document.forms["Validate"]["SLAList"].value;
+		}
+			
+			// Textbox in the checkboxes
+		function Surrender() {
+			SecondAuth.surrender = document.forms["Validate"]["SurrenderDate"].value;
+			}
+	
+		
+		
+	function Addtext(vone, vtwo, vthree, vfour, vfive, vsix, vseven, veight, vnine, vten) {		
+		
+		VariableArray.one = document.getElementById(vone);
+			var vone = VariableArray.one.options[VariableArray.one.selectedIndex].value;
+			VariableArray.one = vone;
+			
+		VariableArray.two = document.forms["Validate"][vtwo].value;
+			
+		VariableArray.three = document.getElementById(vthree);
+			var vthree = VariableArray.three.options[VariableArray.three.selectedIndex].value;
+			VariableArray.three = vthree;
+			
+	}
+	
+	function ClearForm(cname,cvalue,exdays){
+	
+		var ClearCADI = confirm("Are you sure you want to clear the CADI?");
+		
+		if (ClearCADI == true) {
+			document.getElementById("Validate").reset();
+		} else {
+		}
+			
+
+	}
+	
+	function ClarifyOther() {
+	
+	// The callers name
+		var CallName = document.forms["Validate"]["CallersNameText"].value;
+	// The relationship
+		var Relation = document.forms["Validate"]["RelationshipListbox"].value;
+						
+		if (Relation == "Other") {
+			var Other = prompt("Please describe the &apos;other&apos; relationship. Are they a sister, friend, father, nurse, etc?", "Kharmic Komrade");
+			if (Other != null) {
+				document.getElementById("CallersNameText").value = CallName + " - " + Other;
+			} else {
+			}
+		} else {
+		}
+	}
+	
+			// This is the section where we deal with accidentally hitting "Escape" when making the wrap up. Here we grab the key being pressed.
+	function GetKey(e) {
+		var code;
+			noEscape.CADI = document.getElementById('CADIText').innerText;
+			if (!e) var e = window.event;
+			if (e.keyCode) code = e.keyCode;
+			else if (e.which) code = e.which;
+				setTimeout('ShowTree('+code+');',100);
+	}
+		
+		// This is the section where we deal with accidentally hitting "Escape" when making the wrap up. Here we check to see if it is the "Escape" key, and then replace the text. 
+	function ShowTree(character, esc){
+		if (character == 27){
+			document.getElementById("CADIText").innerHTML = noEscape.CADI;
+		}
+	}
+
+</script>
+</head>
+
+<body id="ThisBody" onload="VerifyAllInfo()">
+
+<!-- Create a large enough table for formatting purposes -->
+<table width="770">
+<form id="Validate">
+<tr style="font-size:9pt;font-family:Arial;">
+
+<td style="width:300px;border:1px solid black;">
+
+<br><br>
+
+<!-- This is the first form on the page, which is explicitly for getting some general information about the caller through Textbox and Listbox controls. -->
+
+<strong> Caller's Information: </strong>
+<br>
+
+<!-- Textboxes to get some info on the caller -->
+Policy Number: <input type="text" id="PolicyNumberText" name="PolicyNumberText" onchange="VerifyAllInfo()"><br>
+Caller's Name: <input type="text" id="CallersNameText" name="CallersNameText" onchange="VerifyAllInfo()" style="margin-left:4px;"><br>
+
+<strong> Relationship: </strong> 
+
+<!-- A listbox to indicate the relationship between the caller and the insured -->
+<select name="RelationshipListbox" size="1" id="RelationshipListbox" onchange="ClarifyOther();VerifyAllInfo();" style="margin-left:7px;">
+  <option> </option>
+  <option>Owner</option>
+  <option>Insured</option>
+  <option>Payor</option>
+  <option>POA</option>
+  <option>Beneficiary</option>
+  <option>Executor</option>
+  <option>Funeral Home</option>
+  <option>Other</option>
+</select>
+
+<br><br>
+
+<!-- Are there any other qualifications? -->
+<input type="radio" name="AuthRadio" id="VerbalAuth" value="0" onchange="VerifyAllInfo()"> Verbal Auth: <br>
+<input type="radio" name="AuthRadio" id="CIRARI" value="1" onchange="VerifyAllInfo()"> CIR/ARI: 
+	<input type="text" id="CIRDoc" name="CIRDoc" onchange="VerifyAllInfo()" style="margin-left:53px;"> <br>
+<input type="radio" name="AuthRadio" id="LegalAuth" value="2" onchange="VerifyAllInfo()"> Legal Auth: 
+	<input type="text" id="LegalAuthDoc" name="LegalAuthDoc" onchange="VerifyAllInfo()" style="margin-left:40px;"> <br>
+<input type="radio" name="AuthRadio" id="Assignment" value="3" onchange="VerifyAllInfo()"> Assignment:
+	<input type="text" id="AssignmentDoc" name="AssignmentDoc" onchange="VerifyAllInfo()" style="margin-left:34px;"> <br>
+<input type="radio" name="AuthRadio" id="ClaimAssignment" value="4" onchange="VerifyAllInfo()"> Claim Assignment:
+	<input type="text" id="ClaimAssDoc" name="ClaimAssDoc" onchange="VerifyAllInfo()"> <br>
+<input type="radio" name="AuthRadio" id="None" value="0" onchange="VerifyAllInfo()" checked="checked"> None <br>
+
+</td>
+
+<td style="width:300px;border:1px solid black;">
+
+<strong> Validate </strong><br>
+
+<input type="checkbox" name="CTIBox" id="chkCTI" value="1" onchange="VerifyAllInfo()"> CTI Pop Auth or Qualified Transfer <br>
+<input type="checkbox" name="Checkbox" id="chkPolNum" value="1" onchange="VerifyAllInfo()"> Policy Number <br>
+<input type="checkbox" name="Checkbox" id="chkSSN" value="1" onchange="VerifyAllInfo()"> Owner's SSN or Tax ID (Complete) 
+		<input type="text" name="SSNText" id="SSNText" value="" onchange="VerifyAllInfo()"> <br>
+<input type="checkbox" name="Checkbox" id="chkOwName" value="1" onchange="VerifyAllInfo()"> Owner's Name <br>
+<input type="checkbox" name="Checkbox" id="chkZip" value="1" onchange="VerifyAllInfo()"> Owner's Zip Code <br>
+<input type="checkbox" name="Checkbox" id="chkInsDOB" value="1" onchange="VerifyAllInfo()"> Insured's DOB <br>
+<input type="checkbox" name="Checkbox" id="chkOwADDY" value="1" onchange="VerifyAllInfo()"> Owner's Street Address <br>
+<input type="checkbox" name="Checkbox" id="chkOwNum" value="1" onchange="VerifyAllInfo()"> Owner's Phone Number (10 digit) <br>
+<input type="checkbox" name="Checkbox" id="chkINSName" value="1" onchange="VerifyAllInfo()"> Insured's Name (for death notification) <br>
+
+<table>
+<tr>
+<td style="width:300px;border:1px solid black;">
+
+<strong>Deceased?</strong><br>
+
+<input type="checkbox" name="OwnerDODBox" id="chkOwDOD" value="" onchange="VerifyAllInfo()"> Owner 
+	<span title="Date of Death (MM/DD/YYY)">
+		<input type="text" name="OwnerDODText" id="OwnerDODText" value="" onchange="VerifyAllInfo()" style="margin-left:4px;"> <br>
+	</span>
+		
+<input type="checkbox" name="InsuredDODBox" id="chkInsDOD" value="" onchange="VerifyAllInfo()"> Insured 
+	<span title="Date of Death (MM/DD/YYY)">
+		<input type="text" name="InsuredDODText" value="" onchange="VerifyAllInfo()"> <br>
+	</span>
+</td>
+</tr>
+</table>
+
+</td>
+
+</tr>
+
+
+<tr>
+<td id="PII" colspan=2 style="height:200px;border:1px solid black;">
+
+<!-- Now, let's list out what exactly we are allowed to say. -->
+
+<strong> Authorization </strong>
+<br>
+
+<!-- These are the textareas which will indicate what PII we are allowed to release to the caller -->
+Non-Financial:
+<textarea id=NonFi readonly style="height:25px;width:440px;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">Correspondence Confirmation [Incoming]</textarea><br>
+Premium:
+<textarea id=Prem readonly style="height:22px;width:450px;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">No disclosure</textarea><br>
+Financial:
+<textarea id=Finance readonly style="height:22px;width:450px;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">No disclosure</textarea><br>
+Claims:
+<textarea id=Claim readonly style="height:22px;width:450px;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">No disclosure</textarea><br>
+
+<br>
+
+<strong>Documentation:</strong><br>
+
+<!-- Payment over the phone -->
+
+<div style="float:right;">
+
+
+<!-- This button sends us to the Pay by Phone options -->
+<a target="_blank" href="http://extteamsites.conseco.com/sites/LearningLink2/Published%20ELearning%20Modules/OPP%20Resources/Online%20Premium%20Payment%20Decision%20Tree%20-%20Storyline%20output/story.html">Online Premium Payments Eligibility</a>
+
+
+</div>
+
+<!-- This is a the area where the user will type out their Wrap Up. -->
+<textarea name="CADIText" id=CADIText style="height:100px;width:500px;font-size:8pt;font-family:Arial;" onkeydown="GetKey()"></textarea><br>
+
+<!-- This button triggers my AddToCADI function to display the status of the CADI variable. -->
+<input type="button" onclick="AddToCADI()" id="button" value="Copy">
+
+<!-- This button resets the AuthorizedInfo form --> 
+<input type="button" onclick="AddToCADI();ClearForm();" Value="Clear">
+
+<!-- This button sends us to the Life CADI -->
+<input type="button" onclick="location.href='http://cnonet.conseco.ad/CIGWashington/cig_phs/Customer%20Service%20System%20Documents/CADI-Health.html';" value="Health CADI" />
+
+</td>
+</tr>
+
+
+
+</form>
+</table>
+
+</body>
+</html>
+
+<!-- This website has been put together by Matt Paul and Nichole Sherrill. If you have any questions, feel free to contact one of them. -->

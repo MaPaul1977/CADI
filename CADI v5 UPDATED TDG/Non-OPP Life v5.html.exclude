@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC>
+<html lang="en">
+
+<head>
+
+<meta http-equiv="x-ua-compatible" content="IE=Edge"/> 
+
+<title>
+	Caller Authentication and Documentation Interface - Life
+</title>
+			
+
+<style>
+.conts	{	visibility:hidden
+		}
+.tab	{	border-top:solid thin #E0E0E0;
+			border-right:solid thin gray;
+			border-left:solid thin #E0E0E0;
+			font-family:Verdana;
+			font-size:10pt;
+			text-align:center;
+			font-weight:normal;
+			background-color:#C0C0C0;
+		}
+
+.selTab	{	border-left:solid thin white;
+			border-top:solid thin white;
+			border-right:solid thin black;
+			font-weight:bold;
+			text-align:center;
+			background-color:grey;
+		}
+</style>
+
+
+</head>
+
+<body onclick="changeTabs()" onload="init()">
+
+<!-- Create a large enough table for formatting purposes -->
+<table width="870">
+<form id="Validate">
+<tr style="font-size:9pt;font-family:Arial;">
+
+<td style="width:300px;border:1px solid black;">
+
+<br><br>
+
+<!-- This is the first form on the page, which is explicitly for getting some general information about the caller through Textbox and Listbox controls. -->
+
+<strong> Caller's Information: </strong>
+<br>
+
+<!-- Textboxes to get some info on the caller -->
+Policy Number: <input type="text" id="PolicyNumberText" name="PolicyNumberText" onchange="AuthorizationCheck()"><br>
+Caller's Name: <input type="text" id="CallersNameText" name="CallersNameText" onchange="AuthorizationCheck()" style="margin-left:4px;"><br>
+
+<strong> Relationship: </strong> 
+
+<!-- A listbox to indicate the relationship between the caller and the insured -->
+<select id="RelationshipListbox" name="RelationshipListbox" size="1" onchange="AuthorizationCheck()" style="margin-left:7px;">
+  <option> </option>
+  <option>Owner</option>
+  <option>Insured</option>
+  <option>Payor</option>
+  <option>Beneficiary</option>
+  <option>POA or Executor</option>
+  <option>Funeral Home</option>
+  <option>Other</option>
+</select>
+
+<br><br>
+
+<!-- Are there any other qualifications? -->
+<strong> Secondary Authorization </strong>
+<select id="OtherAuthList" name="OtherAuthList" size="1" onchange="AuthorizationCheck()" style="margin-left:7px;">
+  <option> </option>
+  <option>Verbal Authorization</option>
+  <option>Confidential Information Release Form</option>
+  <option>Legal Authorization</option>
+  <option>Assignment</option>
+  <option>1035x</option>
+</select>
+
+Document Number:<input type="text" id="OtherAuthText" name="OtherAuthText" onchange="AuthorizationCheck()"> <br>
+
+<br>
+
+<table>
+<tr>
+<td style="width:300px;border:1px solid black;">
+
+<strong>Deceased?</strong><br>
+
+<input type="checkbox" name="OwnerDODBox" id="chkOwDOD" value="" onchange="AuthorizationCheck()"> Owner 
+	<span title="Date of Death (MM/DD/YYY)">
+		<input type="text" name="OwnerDODText" id="OwnerDODText" value="" onchange="AuthorizationCheck()" style="margin-left:4px;"> <br>
+	</span>
+		
+<input type="checkbox" name="InsuredDODBox" id="chkInsDOD" value="" onchange="AuthorizationCheck()"> Insured 
+	<span title="Date of Death (MM/DD/YYY)">
+		<input type="text" name="InsuredDODText" value="" onchange="AuthorizationCheck()"> <br>
+	</span>
+</td>
+</tr>
+</table>
+
+</td>
+
+<td style="width:300px;border:1px solid black;">
+
+<strong> Validate </strong><br>
+
+<input type="checkbox" name="CTIBox" id="chkCTI" value="1" onchange="AuthorizationCheck()"> CTI Pop Auth or Qualified Transfer <br>
+<input type="checkbox" name="Checkbox" id="chkPolNum" value="1" onchange="AuthorizationCheck()"> Policy Number <br>
+<input type="checkbox" name="Checkbox" id="chkSSN" value="1" onchange="AuthorizationCheck()"> Owner's SSN or Tax ID (Complete) 
+		<input type="text" name="SSNText" id="SSNText" value="" onchange="AuthorizationCheck()"> <br>
+<input type="checkbox" name="Checkbox" id="chkOwName" value="1" onchange="AuthorizationCheck()"> Owner's Name <br>
+<input type="checkbox" name="Checkbox" id="chkZip" value="1" onchange="AuthorizationCheck()"> Owner's Zip Code <br>
+<input type="checkbox" name="Checkbox" id="chkInsDOB" value="1" onchange="AuthorizationCheck()"> Insured's DOB <br>
+<input type="checkbox" name="Checkbox" id="chkOwADDY" value="1" onchange="AuthorizationCheck()"> Owner's Street Address <br>
+<input type="checkbox" name="Checkbox" id="chkOwNum" value="1" onchange="AuthorizationCheck()"> Owner's Phone Number (10 digit) <br>
+<input type="checkbox" name="Checkbox" id="chkINSName" value="1" onchange="AuthorizationCheck()"> Insured's Name (for death notification) <br>
+
+
+
+</td>
+
+</tr>
+
+
+<tr>
+<td id="PII" colspan=2 style="height:200px;border:1px solid black;">
+
+<!-- Now, let's list out what exactly we are allowed to say. -->
+
+<!-- These are the textareas which will indicate what PII we are allowed to release to the caller -->
+Non-Financial:<br>
+<textarea id=NonFi readonly style="width:90%;height:12%;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">Correspondence Confirmation [Incoming]</textarea><br>
+Premium:<br>
+<textarea id=Prem readonly style="width:90%;height:12%;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">No disclosure</textarea><br>
+Financial:<br>
+<textarea id=Finance readonly style="width:90%;height:12%;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">No disclosure</textarea><br>
+Claims:<br>
+<textarea id=Claim readonly style="width:90%;height:12%;border:0px solid black;overflow:hidden;outline:none;font-size:8pt;font-family:Arial;">No disclosure</textarea><br>
+
+<br>
+</td>
+</tr>
+<tr>
+<td id="Docs" colspan=2 style="height:130px;border:1px solid black;">
+
+<strong>Documentation:</strong><br>
+
+<!-- This is a the area where the user will type out their Wrap Up. -->
+<textarea name="CADIText" id=CADIText style="height:100px;width:500px;font-size:8pt;font-family:Arial;float:left;" ></textarea>
+
+<!-- This button triggers my AddToCADI function to display the status of the CADI variable. -->
+<input type="button" onclick="AddToCADI()" id="button" value="Copy" style="float:center;"><br>
+
+<!-- This button resets the AuthorizedInfo form --> 
+<input type="reset" Value="Reset" style="float:center;"><br>
+
+<!-- This button sends us to the Life CADI -->
+<input type="button" onclick="location.href='http://cnonet.conseco.ad/CIGWashington/cig_phs/Customer%20Service%20System%20Documents/CADI-Health.html';" value="Health CADI" /><br><br>
+
+
+</td>
+</tr>
+
+
+
+
+</table>
+
+</body>
+<script language="JavaScript" type="text/javascript" src="LifeJS.js"></script>
+
+</html>
+
+<!-- This website has been put together by Matt Paul and Nichole Sherrill. If you have any questions, feel free to contact one of them. -->
